@@ -20,13 +20,15 @@ class Sweep
     bool clean = false;
 
     void render(){
-        if(clean){
+        /*if(clean){
             ControlPoints.clear();
             EstimatedPoints.clear();
             clean = false;
-        }
+        }*/
 
-        GetControlPoints();
+        if(mouseSt == 0){
+            GetControlPoints();
+        }
 
         if(ControlPoints.size() > 3){
            BE::Curva(ControlPoints);
@@ -36,11 +38,11 @@ class Sweep
     void GetControlPoints(){
         int i;
 
-        if(mouseSt == 0){
+        //if(mouseSt == 0){
             ControlPoints.push_back(new Vector2 (mouseX,mouseY));
-            //printf("%d, %d\n", *ControlPoints[i]);
+           // printf("%d, %d\n", *ControlPoints[i]);
             i++;
-        }
+        //}
     }
 
 };

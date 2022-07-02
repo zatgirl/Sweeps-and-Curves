@@ -253,6 +253,22 @@ void CV::circleFill( Vector2 p, float radius, int div )
    glEnd();
 }
 
+void CV::circleFill( Vector3 p, float radius, int div )
+{
+   float ang = 0, x1, y1, z1;
+   float inc = PI_2/div;
+   glBegin(GL_POLYGON);
+      for(int lado = 1; lado <= div; lado++) //GL_POLYGON desenha um poligono CONVEXO preenchido.
+      {
+         x1 = (cos(ang)*radius);
+         y1 = (sin(ang)*radius);
+         z1 = 0;
+         glVertex2d(x1+p.x, y1+p.y);
+         ang+=inc;
+      }
+   glEnd();
+}
+
 //coordenada de offset para desenho de objetos.
 //nao armazena translacoes cumulativas.
 void CV::translate(float offsetX, float offsetY)

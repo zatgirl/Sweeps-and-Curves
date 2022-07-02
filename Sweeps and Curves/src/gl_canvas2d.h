@@ -10,6 +10,7 @@
 #include <GL/glut.h>
 #include <GL/freeglut_ext.h> //callback da wheel do mouse.
 #include "Vector2.h"
+#include "Vector3.h"
 
 #define PI_2 6.28318530717
 #define PI   3.14159265359
@@ -47,6 +48,7 @@ public:
 
     static void circleFill( float x, float y, float radius, int div );
     static void circleFill( Vector2 pos, float radius, int div );
+    static void circleFill( Vector3 p, float radius, int div);
 
     //especifica a cor de desenho e de limpeza de tela
     static void color(float r, float g, float b);
