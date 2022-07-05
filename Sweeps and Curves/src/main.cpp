@@ -42,8 +42,8 @@ bool click = false;
 float fps;
 std::vector <Vector3*> controlPoints;
 Vector3 matrizPoints[25][25];
-Vector2 p;
-
+Vector2 p[25][25];
+//std::vector <Vector3*> transf;
 
 Scene *scene;
 //Frames *frames;
@@ -68,34 +68,148 @@ void sweepp(){
 
 void persp(){
     sweepp();
-    float maiorr=0;
-    for(int m = 0; m<controlPoints.size(); m++){
-        if(maiorr < matrizPoints[0][m].x){
-            maiorr = matrizPoints[0][m].x;
+    float maiorr = 0;
+    float minbx= 100, minby= 100, maxbx = -100, maxby = -100;
+    for(int m = 0; m < controlPoints.size(); m ++){
+        if(maiorr < matrizPoints[0][m].y){
+            maiorr = matrizPoints[0][m].y;
         }
     }
-    float d = 50;
-    for(int col = 0; col < 25; col++){
+    float d = -150;
+    for(int col = 0; col < 8; col++){
         for(int linha = 0; linha < controlPoints.size(); linha++){
-            p.x = (matrizPoints[col][linha].x * d) / ((matrizPoints[col][linha].z) + maiorr);
-            p.y = (matrizPoints[col][linha].y * d) / ((matrizPoints[col][linha].z) + maiorr);
+            p[col][linha].x = (matrizPoints[col][linha].x * d) / ((matrizPoints[col][linha].z));
+            p[col][linha].y = (matrizPoints[col][linha].y * d) / ((matrizPoints[col][linha].z));
             CV::color(3);
-            CV::translate(300,200);
-            CV::circleFill(p.x,p.y,4,10);
+            CV::translate(600,200);
+            CV::circleFill(p[col][linha].x,p[col][linha].y,4,10);
+            minbx = (minbx > p[col][linha].x) ? p[col][linha].x : minbx;
+            minby = (minby > p[col][linha].y) ? p[col][linha].y : minby;
+            maxbx = (maxbx < p[col][linha].x) ? p[col][linha].x : maxbx;
+            maxby = (maxby < p[col][linha].y) ? p[col][linha].y : maxby;
+        }
+    }
+    CV::color(0,0,1);
+    CV::rect(minbx,minby,maxbx,maxby);
+}
+
+void wire(){
+    CV::color(0.7,0.7,0.7);
+    for(int y = 0; y < 8; y ++){
+    for(int x = 0; x < controlPoints.size(); x++){
+            CV::line(p[y][x], p[y][x+1]); //linha horizontal
+            CV::line(p[y][x], p[y+1][x]); //linha vertical
+            CV::line(p[y][x], p[y+1][x+1]); //linha diagonal
         }
     }
 }
 
+
+   //faz a rotacao de um unico ponto 3D no eixo X
+   Vector3 rotacionaY(Vector3 p , int x)
+   {
+      Vector3 resp;
+      float ang = (PI*x)/180;
+      //ang += 0.00001;
+
+      resp.x = cos(ang)*p.x + sin(ang)*p.z;
+      resp.y = p.y;
+      resp.z = -sin(ang)*p.x + cos(ang)*p.z;
+
+      return resp;
+   }
+
+   //faz a translacao de um unico ponto
+   Vector3 translada(Vector3 p)
+   {
+       Vector3 resp;
+
+       resp.x = p.x;
+       resp.y = p.y - 10 ;
+       resp.z = p.z - 12;
+
+       return resp;
+   }
+
+   //projecao em perspectiva, assumindo camera na origem olhando para z negativo.
+   Vector3 projeta( Vector3 p )
+   {
+       float d = -10.0;
+       Vector3 resp;
+
+       resp.x = (p.x*d) / p.z;
+       resp.y = (p.y*d) / p.z;
+       resp.z = 0;
+
+       return resp;
+   }
+
+
+   //aplica sequencia de transformacoes na malha para fazer a animacao e visualizacao.
+   void transforma()
+   {
+       Vector3 p;
+       printf("entrou\n");
+      //Processa cada vertice da superficie individualmente.
+    for(int r=0; r = 1; r++){
+      for(int x=0; x<=8; x++){
+        printf("1 for: %d\n", x);
+         for(int z=0; z<=controlPoints.size(); z++)
+         {
+             printf("2 for: %d\n", z);
+              //copia os pontos originais
+              p = controlPoints[r][z];
+
+              //rotacao no eixo y
+              p = rotacionaY( p, x );
+
+              //translacao no eixo z
+              p = translada( p );
+
+              //projecao em perspectiva
+              matrizPoints[x][z] = projeta( p );
+         }
+      }
+    }
+   }
+
 void render()
 {
+    if(controlPoints.size() > 3){
+      //a cada renderizacao aplica uma transformacao na superficie que faz a rotacao e projecao em perspectiva.
+      transforma();
+        CV::color(0);
+        CV::translate(300,200);
+        //desenha os vertices
+      for(int x=0; x<=8; x++){
+         for(int z=0; z<=controlPoints.size(); z++)
+         {
+             CV::point(matrizPoints[x][z].x, matrizPoints[x][z].y);
+         }
+      }
+
+     CV::translate(600,200);
+     CV::color(3);
+      //desenha as arestas
+      for(int x=0; x<8; x++){
+         for(int z=0; z<controlPoints.size(); z++)
+         {
+             CV::line(matrizPoints[x][z].x, matrizPoints[x][z].y, matrizPoints[x+1][z].x, matrizPoints[x+1][z].y );
+             CV::line(matrizPoints[x][z].x, matrizPoints[x][z].y, matrizPoints[x][z+1].x, matrizPoints[x][z+1].y );
+         }
+      }
+
+    }
     //CV::translate(300,200);
-    if(controlPoints.size() > 0){
+    /*if(controlPoints.size() > 0){
 
 
         //BE::Curva(controlPoints);
         //sweepp();
         persp();
-    }
+        CV::translate(1000,200);
+        wire();
+    }*/
     //scene->render();
     //fps = frames->getFrames();
     //scene->viewFrames(fps, screenWidth, screenHeight);
