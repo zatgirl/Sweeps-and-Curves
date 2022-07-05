@@ -43,6 +43,7 @@ float fps;
 std::vector <Vector3*> controlPoints;
 Vector3 matrizPoints[25][25];
 Vector2 p[25][25];
+Vector2 centroobj;
 //std::vector <Vector3*> transf;
 
 Scene *scene;
@@ -52,6 +53,7 @@ void sweepp(){
     float ang, radius;
     float x,y,z;
     CV::translate(0,0);
+    Vector2 mintrans, maxtrans;
     for(int i = 0, rotacao = 0; i < 360; i+= 45, rotacao ++){
         ang = (PI*i)/180;
         for(int linha = 0; linha < controlPoints.size(); linha ++){
@@ -62,6 +64,10 @@ void sweepp(){
             CV::color(0);
             CV::translate(300,200);
             CV::circleFill(x,y,3,5);
+            mintrans.x = (minbx > p[col][linha].x) ? p[col][linha].x : mintrans.x;
+            mintrans.y = (minby > p[col][linha].y) ? p[col][linha].y : mintrans.y;
+            maxtrans.x = (maxbx < p[col][linha].x) ? p[col][linha].x : maxtrans.x;
+            maxtrans.y = (maxby < p[col][linha].y) ? p[col][linha].y : maxtrans.y;
         }
     }   CV::translate(0,0);
 }
@@ -69,17 +75,18 @@ void sweepp(){
 void persp(){
     sweepp();
     float maiorr = 0;
+
     float minbx= 100, minby= 100, maxbx = -100, maxby = -100;
     for(int m = 0; m < controlPoints.size(); m ++){
-        if(maiorr < matrizPoints[0][m].y){
-            maiorr = matrizPoints[0][m].y;
+        if(maiorr > matrizPoints[0][m].z){
+            maiorr = matrizPoints[0][m].z;
         }
     }
-    float d = -150;
+    float d = 150;
     for(int col = 0; col < 8; col++){
         for(int linha = 0; linha < controlPoints.size(); linha++){
-            p[col][linha].x = (matrizPoints[col][linha].x * d) / ((matrizPoints[col][linha].z));
-            p[col][linha].y = (matrizPoints[col][linha].y * d) / ((matrizPoints[col][linha].z));
+            p[col][linha].x = (matrizPoints[col][linha].x * d) / ((matrizPoints[col][linha].z)+150);
+            p[col][linha].y = (matrizPoints[col][linha].y * d) / ((matrizPoints[col][linha].z)+150);
             CV::color(3);
             CV::translate(600,200);
             CV::circleFill(p[col][linha].x,p[col][linha].y,4,10);
@@ -89,6 +96,7 @@ void persp(){
             maxby = (maxby < p[col][linha].y) ? p[col][linha].y : maxby;
         }
     }
+    centroobj.set(maxbx/2, minby/2);
     CV::color(0,0,1);
     CV::rect(minbx,minby,maxbx,maxby);
 }
@@ -175,6 +183,7 @@ void wire(){
 
 void render()
 {
+    #if 0
     if(controlPoints.size() > 3){
       //a cada renderizacao aplica uma transformacao na superficie que faz a rotacao e projecao em perspectiva.
       transforma();
@@ -200,8 +209,9 @@ void render()
       }
 
     }
-    //CV::translate(300,200);
-    /*if(controlPoints.size() > 0){
+    #endif
+    CV::translate(300,200);
+    if(controlPoints.size() > 0){
 
 
         //BE::Curva(controlPoints);
@@ -209,7 +219,7 @@ void render()
         persp();
         CV::translate(1000,200);
         wire();
-    }*/
+    }
     //scene->render();
     //fps = frames->getFrames();
     //scene->viewFrames(fps, screenWidth, screenHeight);

@@ -370,3 +370,95 @@
 
 1656591432 d:\documentos\github\sweeps-and-curves\sweeps and curves\src\vector3.h
 
+1657039734 source:c:\users\maure\documents\github\sweeps-and-curves\sweeps and curves\src\gl_canvas2d.cpp
+	"gl_canvas2d.h"
+	<GL/glut.h>
+
+1657039734 c:\users\maure\documents\github\sweeps-and-curves\sweeps and curves\src\gl_canvas2d.h
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	<string.h>
+	<iostream>
+	<GL/glut.h>
+	<GL/freeglut_ext.h>
+	"Vector2.h"
+	"Vector3.h"
+
+1656525762 c:\users\maure\documents\github\sweeps-and-curves\sweeps and curves\include\gl\glut.h
+	"freeglut_std.h"
+
+1656525762 c:\users\maure\documents\github\sweeps-and-curves\sweeps and curves\include\gl\freeglut_std.h
+	<windows.h>
+	<EGL/egl.h>
+	<GLES/gl.h>
+	<GLES2/gl2.h>
+	<OpenGL/gl.h>
+	<OpenGL/glu.h>
+	<GL/gl.h>
+	<GL/glu.h>
+	<stdlib.h>
+
+1656525762 c:\users\maure\documents\github\sweeps-and-curves\sweeps and curves\include\gl\freeglut_ext.h
+	<stdarg.h>
+
+1656525762 c:\users\maure\documents\github\sweeps-and-curves\sweeps and curves\src\vector2.h
+
+1657039734 c:\users\maure\documents\github\sweeps-and-curves\sweeps and curves\src\vector3.h
+
+1657039899 source:c:\users\maure\documents\github\sweeps-and-curves\sweeps and curves\src\main.cpp
+	<GL/glut.h>
+	<GL/freeglut_ext.h>
+	<math.h>
+	<stdio.h>
+	<stdlib.h>
+	<vector>
+	"gl_canvas2d.h"
+	"Vector2.h"
+	"Vector3.h"
+	"scene.h"
+	"Frames.h"
+	"sweep.h"
+	"bezier.h"
+
+1657039687 c:\users\maure\documents\github\sweeps-and-curves\sweeps and curves\src\scene.h
+	<iostream>
+	<cstdio>
+	<cstdlib>
+	<vector>
+	<cstring>
+	"bezier.h"
+	"Botao.h"
+	"sweep.h"
+
+1657039734 c:\users\maure\documents\github\sweeps-and-curves\sweeps and curves\src\bezier.h
+	<stdio.h>
+	<stdlib.h>
+	<vector>
+	"gl_canvas2d.h"
+	"Vector2.h"
+
+1656525762 c:\users\maure\documents\github\sweeps-and-curves\sweeps and curves\src\botao.h
+	"gl_canvas2d.h"
+
+1657039734 c:\users\maure\documents\github\sweeps-and-curves\sweeps and curves\src\sweep.h
+	<stdio.h>
+	<stdlib.h>
+	<vector>
+	"gl_canvas2d.h"
+	"Vector2.h"
+	"bezier.h"
+	"perspective.h"
+
+1656525762 c:\users\maure\documents\github\sweeps-and-curves\sweeps and curves\src\perspective.h
+	<stdio.h>
+	<stdlib.h>
+	<vector>
+	"gl_canvas2d.h"
+	"Vector2.h"
+	"bezier.h"
+
+1656525762 c:\users\maure\documents\github\sweeps-and-curves\sweeps and curves\src\frames.h
+	<stdio.h>
+	<time.h>
+
