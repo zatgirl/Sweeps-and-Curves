@@ -41,7 +41,7 @@ int screenWidth = 1200, screenHeight = 588;//largura e altura inicial da tela . 
 bool click = false;
 float fps;
 std::vector <Vector3> controlPoints;
-float ajusted = -100, ajustez = 0;
+float ajusted = -100, ajustez = 20;
 //Scene *scene;
 Sweep *sweep;
 Perspective *perspective;
@@ -52,9 +52,9 @@ Perspective *perspective;
 
 void render()
 {
-     if(controlPoints.size() > 5){
+     if(controlPoints.size() > 3){
         //printf("sweep\n");
-        sweep->CreateSweep(controlPoints);
+        sweep->CreateSweep(controlPoints, ajustez);
         //printf("Create Sweep\n");
         perspective->persp(sweep->matrizPoints, sweep->tam, sweep->rot, ajusted);
         //printf("p2\n");
@@ -78,21 +78,15 @@ void keyboard(int key)
     if(key == 100){
         ajusted -= 10;
     }
-    //printf("_d: %.2f", ajusted);
+    printf("_d: %.2f", ajusted);
 
     ///incrementa _z no w
     if (key == 119){
         ajustez += 10;
-        for(int i = 0; i < controlPoints.size(); i++){
-           controlPoints[i] = (Vector3(controlPoints[i].x, controlPoints[i].y, ajustez));
-        }
     }
     ///decrementa _z no s
     if(key == 115){
         ajustez -= 10;
-        for(int i = 0; i < controlPoints.size(); i++){
-            controlPoints[i] = (Vector3(controlPoints[i].x, controlPoints[i].y, ajustez));
-        }
     }
      printf("ajustez: %.2f\n", ajustez);
 }

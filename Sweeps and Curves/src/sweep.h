@@ -38,16 +38,6 @@ class Sweep
         }
     }
 
-    void GetControlPoints(){
-        int i;
-
-        //if(mouseSt == 0){
-            //ControlPoints.push_back(new Vector2 (mouseX,mouseY));
-           // printf("%d, %d\n", *ControlPoints[i]);
-            i++;
-        //}
-    }
-
    Vector3 rotacionaY(Vector3 p , float ang)
    {
       Vector3 resp;
@@ -66,24 +56,32 @@ class Sweep
        return resp;
    }
 
-    void CreateSweep(std::vector<Vector3> points){
+    void CreateSweep(std::vector<Vector3> points, float _z){
         float ang = 0.0f;
         Vector3 ptemp;
         for(int i = 0; i < points.size(); i++){
             ptemp = (points[i]);
-            matrizPoints[i][0] = ptemp;
+            matrizPoints[0][i] = ptemp;
         }
-        //printf("for 1 sweep\n");
         for(int i = 0, col = 1; i < 360; i += 45, col ++){
             ang = (PI * i)/180;
             for(int linha = 0; linha < points.size(); linha ++){
-                matrizPoints[linha][col] = rotacionaY(matrizPoints[linha][0], ang);
-                matrizPoints[linha][col] = translada(matrizPoints[linha][col], Vector3(0,0,-20));
+                matrizPoints[col][linha] = rotacionaY(matrizPoints[0][linha], ang);
+                matrizPoints[col][linha] = translada(matrizPoints[col][linha], Vector3(0,0, _z));
+
             }
             rot = col;
             tam = points.size();
         }
-        //printf("fim");
+        /*
+        ///varrendo matriz debug
+        for(int i = 0; i < rot; i ++){
+            for(int linha = 0; linha < points.size(); linha ++){
+                printf("rot: %d, matrizsweep[%d][%d]: %0.2f, %.2f, %.2f\n", rot, i, linha, matrizPoints[i][linha].x, matrizPoints[i][linha].y, matrizPoints[i][linha].z);
+
+            }
+        }*/
+
     }
 
 };
