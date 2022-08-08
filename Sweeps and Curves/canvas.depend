@@ -302,9 +302,9 @@
 1426372440 d:\documentos\github\sweeps-and-curves\sweeps and curves\include\gl\freeglut_ext.h
 	<stdarg.h>
 
-1656372890 d:\documentos\github\sweeps-and-curves\sweeps and curves\src\vector2.h
+1655259852 d:\documentos\github\sweeps-and-curves\sweeps and curves\src\vector2.h
 
-1656990135 source:d:\documentos\github\sweeps-and-curves\sweeps and curves\src\main.cpp
+1659932826 source:d:\documentos\github\sweeps-and-curves\sweeps and curves\src\main.cpp
 	<GL/glut.h>
 	<GL/freeglut_ext.h>
 	<math.h>
@@ -314,7 +314,6 @@
 	"gl_canvas2d.h"
 	"Vector2.h"
 	"Vector3.h"
-	"scene.h"
 	"Frames.h"
 	"sweep.h"
 	"bezier.h"
@@ -334,7 +333,7 @@
 	"gl_canvas2d.h"
 	"Vector2.h"
 
-1656473103 d:\documentos\github\sweeps-and-curves\sweeps and curves\src\scene.h
+1659484721 d:\documentos\github\sweeps-and-curves\sweeps and curves\src\scene.h
 	<iostream>
 	<cstdio>
 	<cstdlib>
@@ -351,22 +350,22 @@
 1656465520 d:\documentos\github\sweeps-and-curves\sweeps and curves\src\botao.h
 	"gl_canvas2d.h"
 
-1656589776 d:\documentos\github\sweeps-and-curves\sweeps and curves\src\sweep.h
+1659932417 d:\documentos\github\sweeps-and-curves\sweeps and curves\src\sweep.h
 	<stdio.h>
 	<stdlib.h>
 	<vector>
 	"gl_canvas2d.h"
 	"Vector2.h"
+	"Vector3.h"
 	"bezier.h"
 	"perspective.h"
 
-1656472496 d:\documentos\github\sweeps-and-curves\sweeps and curves\src\perspective.h
+1659933057 d:\documentos\github\sweeps-and-curves\sweeps and curves\src\perspective.h
 	<stdio.h>
 	<stdlib.h>
 	<vector>
 	"gl_canvas2d.h"
 	"Vector2.h"
-	"bezier.h"
 
 1656591432 d:\documentos\github\sweeps-and-curves\sweeps and curves\src\vector3.h
 

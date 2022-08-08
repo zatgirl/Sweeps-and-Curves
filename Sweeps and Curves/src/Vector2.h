@@ -51,25 +51,7 @@ public:
        return( aux );
    }
 
-      Vector2 operator + (const float s)
-   {
-       Vector2 aux( x + s, y + s);
-       return( aux );
-   }
-
-   Vector2 operator + (const int s)
-   {
-       Vector2 aux( x + s, y + s);
-       return( aux );
-   }
-
    Vector2 operator * (const float s)
-   {
-       Vector2 aux( x * s, y * s);
-       return( aux );
-   }
-
-   Vector2 operator * (const double s)
    {
        Vector2 aux( x * s, y * s);
        return( aux );

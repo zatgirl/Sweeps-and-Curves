@@ -49,7 +49,7 @@ class BE
        }
     }
 
-    static void Curva(std::vector <Vector3*> v){
+    static void Curva(std::vector <Vector3> v){
        Vector3 p;
        CV::color(1);
        int quantPontos = v.size();
@@ -57,9 +57,9 @@ class BE
        for(float t = 0; t < 1; t+=0.001){
           p.set(0,0,0);
           for(int ponto = 0; ponto < quantPontos; ponto++){
-             p = ((*v[ponto]) * CalcBezier(ponto, t, quantPontos) + p);
+             p = ((v[ponto]) * CalcBezier(ponto, t, quantPontos) + p);
              CV::color(1,0,0);
-             CV::circleFill(*v[ponto], 6, 10);
+             CV::circleFill(v[ponto], 6, 10);
           }
           CV::color(3);
           CV::point(p.x,p.y);

@@ -15,10 +15,10 @@ Botao *increasePoints = NULL;
 Botao *decreasePoints = NULL;
 Botao *increaseRot = NULL;
 Botao *decreaseRot = NULL;
-Botao *perspective = NULL;
+Botao *perspectiv = NULL;
 Botao *create = NULL;
 Botao *clean = NULL;
-Sweep *sweep;
+//Sweep *sweep;
 
 class Scene
 {
@@ -47,7 +47,7 @@ public:
         if(createSt){
             CartesianScene();
             if(mouseSt == 0){
-                sweep->render();
+                //sweep->render();
             }
 
         }
@@ -57,7 +57,7 @@ public:
     }
 
     void ManagerMenu(){
-        Botao *menu[] = {create, perspective};
+        Botao *menu[] = {create, perspectiv};
         Botao *menuCreate[] = {clean};
         Botao *menuPerspective[] = {increasePoints, decreasePoints, increaseRot, decreaseRot};
         if(mouseSt == 1){
@@ -68,7 +68,7 @@ public:
             rotations = (menuPerspective[2]->Colidiu(mouseX,mouseY) ? rotations + 1 : rotations);
             rotations = (menuPerspective[3]->Colidiu(mouseX,mouseY) ? rotations + 1 : rotations);
             if (menuCreate[0]->Colidiu(mouseX,mouseY)){
-                sweep->clean = true;
+                //sweep->clean = true;
             }
         }
     }
@@ -80,8 +80,8 @@ public:
         ///Menu
         create = new Botao(0,screenHeight - 27, 150, 25, "Create", 0.752, 0.752, 0.752);
         create->Draw();
-        perspective = new Botao(155, screenHeight - 27, 150, 25, "Perspective", 0.752, 0.752, 0.752);
-        perspective->Draw();
+        perspectiv = new Botao(155, screenHeight - 27, 150, 25, "Perspective", 0.752, 0.752, 0.752);
+        perspectiv->Draw();
 
         increasePoints = new Botao(10, screenHeight - 100, 25, 25, "<", 0.254, 0.411, 1);
         decreasePoints = new Botao(70, screenHeight - 100, 25, 25, ">", 0.254, 0.411, 1);
@@ -89,9 +89,9 @@ public:
         decreaseRot = new Botao(70, screenHeight - 150, 25, 25, ">", 0.254, 0.411, 1);
 
         if(mouseSt == 0){
-            sweep->mouseX = this->mouseX;
-            sweep->mouseY = this->mouseY;
-            sweep->mouseSt = this->mouseSt;
+//            sweep->mouseX = this->mouseX;
+ //           sweep->mouseY = this->mouseY;
+ //           sweep->mouseSt = this->mouseSt;
         }
 
     }
