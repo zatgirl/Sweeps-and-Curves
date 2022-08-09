@@ -66,6 +66,27 @@ class BE
        }
     }
 
+    ///extrai pontos da curva
+    static std::vector<Vector3> Curva(std::vector <Vector3> v, float param){
+       Vector3 ptemp;
+       std::vector <Vector3> p;
+       CV::color(1);
+       int quantPontos = v.size();
+       float passoponto = 1.0f/param;
+
+       for(float t = 0; t < 1; t+= passoponto){
+          ptemp.set(0,0,0);
+          for(int ponto = 0; ponto < quantPontos; ponto++){
+             ptemp = ((v[ponto]) * CalcBezier(ponto, t, quantPontos) + ptemp);
+             CV::color(1,0,0);
+             CV::circleFill(v[ponto], 6, 10);
+          }
+          CV::color(3);
+          CV::point(ptemp.x,ptemp.y);
+          p.push_back(ptemp);
+       }
+       return p;
+    }
 };
 
 #endif

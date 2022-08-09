@@ -56,18 +56,19 @@ class Sweep
        return resp;
    }
 
-    void CreateSweep(std::vector<Vector3> points, float _z){
+    void CreateSweep(std::vector<Vector3> points, float _z, int rotacoes){
         float ang = 0.0f;
+        int stepsweep = 360/rotacoes;
         Vector3 ptemp;
         for(int i = 0; i < points.size(); i++){
             ptemp = (points[i]);
             matrizPoints[i][0] = ptemp;
         }
         for(int linha = 0; linha < points.size(); linha ++){
-            for(int i = 0, col = 1; i < 360; i += 45, col ++){
-                ang = (PI * i)/180;
+            for(int i = 0, col = 1; i < 360; i += stepsweep, col ++){
+                ang = (PI * i)/90;
                 matrizPoints[linha][col] = rotacionaY(matrizPoints[linha][0], ang);
-                matrizPoints[linha][col] = translada(matrizPoints[linha][col], Vector3(0,0, _z));
+                matrizPoints[linha][col] = translada(matrizPoints[linha][col], Vector3(0,col+3, _z));
                 rot = col;
             }
 
