@@ -497,7 +497,7 @@
 
 1659983835 c:\users\mauren\documents\github\sweeps-and-curves\sweeps and curves\src\vector3.h
 
-1659994382 source:c:\users\mauren\documents\github\sweeps-and-curves\sweeps and curves\src\main.cpp
+1660009604 source:c:\users\mauren\documents\github\sweeps-and-curves\sweeps and curves\src\main.cpp
 	<GL/glut.h>
 	<GL/freeglut_ext.h>
 	<math.h>
@@ -515,7 +515,7 @@
 	<stdio.h>
 	<time.h>
 
-1659988094 c:\users\mauren\documents\github\sweeps-and-curves\sweeps and curves\src\sweep.h
+1660010549 c:\users\mauren\documents\github\sweeps-and-curves\sweeps and curves\src\sweep.h
 	<stdio.h>
 	<stdlib.h>
 	<vector>
@@ -532,7 +532,7 @@
 	"gl_canvas2d.h"
 	"Vector2.h"
 
-1659995278 c:\users\mauren\documents\github\sweeps-and-curves\sweeps and curves\src\perspective.h
+1660012418 c:\users\mauren\documents\github\sweeps-and-curves\sweeps and curves\src\perspective.h
 	<stdio.h>
 	<stdlib.h>
 	<vector>

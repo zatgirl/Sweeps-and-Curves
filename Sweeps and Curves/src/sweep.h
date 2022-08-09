@@ -61,27 +61,18 @@ class Sweep
         Vector3 ptemp;
         for(int i = 0; i < points.size(); i++){
             ptemp = (points[i]);
-            matrizPoints[0][i] = ptemp;
+            matrizPoints[i][0] = ptemp;
         }
-        for(int i = 0, col = 1; i < 360; i += 45, col ++){
-            ang = (PI * i)/180;
-            for(int linha = 0; linha < points.size(); linha ++){
-                matrizPoints[col][linha] = rotacionaY(matrizPoints[0][linha], ang);
-                matrizPoints[col][linha] = translada(matrizPoints[col][linha], Vector3(0,0, _z));
-
+        for(int linha = 0; linha < points.size(); linha ++){
+            for(int i = 0, col = 1; i < 360; i += 45, col ++){
+                ang = (PI * i)/180;
+                matrizPoints[linha][col] = rotacionaY(matrizPoints[linha][0], ang);
+                matrizPoints[linha][col] = translada(matrizPoints[linha][col], Vector3(0,0, _z));
+                rot = col;
             }
-            rot = col;
+
             tam = points.size();
         }
-        /*
-        ///varrendo matriz debug
-        for(int i = 0; i < rot; i ++){
-            for(int linha = 0; linha < points.size(); linha ++){
-                printf("rot: %d, matrizsweep[%d][%d]: %0.2f, %.2f, %.2f\n", rot, i, linha, matrizPoints[i][linha].x, matrizPoints[i][linha].y, matrizPoints[i][linha].z);
-
-            }
-        }*/
-
     }
 
 };

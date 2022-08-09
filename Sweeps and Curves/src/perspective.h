@@ -15,14 +15,16 @@ class Perspective
     Vector2 matrizPersp[100][300];
     int tam, rot;
 
-    void render(){
-        for(int i = 0; i < rot+1; i++){
-            for(int j = 0; j < tam; j++){
-                CV::color(1+i);
-                CV::circleFill(matrizPersp[i][j].x, matrizPersp[i][j].y, 4, 10);
+    void render(Vector2 mouse){
+        for(int i = 0; i < tam; i++){
+
+            for(int j = 0; j < rot+1; j++){
+                CV::color(1+j);
+                //CV::circleFill(matrizPersp[i][j].x, matrizPersp[i][j].y, 4, 10);
             }
         }
         wire();
+        whatposition(mouse);
     }
 
     Vector2 projeta(Vector3 p, float _d)
@@ -44,61 +46,46 @@ class Perspective
    void persp(Vector3 points[][360], int _tam, int _rot, float _d){
        rot = _rot;
        tam = _tam;
-      for(int x=0; x < _rot+1; x++){
-         for(int z=0; z < _tam; z++)
+      for(int x=0; x < _tam; x++){
+         for(int z=0; z < _rot+1; z++)
          {
              Vector2 temp;
              temp = projeta(points[x][z], _d);
              matrizPersp[x][z] = translacao(projeta(points[x][z], _d));
          }
+         matrizPersp[x][_rot+1] = matrizPersp[x][1];
       }
-      for(int i = 0; i < 1; i++){
-         for(int j = 0; j < _tam; j++){
-            matrizPersp[rot+1][j] = matrizPersp[i][j];
-         }
-      }
+   }
+
+   void whatposition(Vector2 position){
+        for(int col = 0; col < rot; col++){
+            for(int linha = 0; linha < tam; linha++){
+                    if(matrizPersp[col][linha].x == position.x && matrizPersp[col][linha].y == position.y){
+                        printf("matrizPersp[%d][%d]\n", matrizPersp[col][linha].x, matrizPersp[col][linha].y);
+                    }
+            }
+        }
    }
 
    void wire(){
         CV::color(0.7,0.7,0.7);
-        for(int col = 0; col < rot; col++){
-            for(int linha = 0; linha < tam; linha++){
-
-                #if 0
+        for(int linha = 0; linha <= tam; linha++){
+            for(int col = 0; col <= rot; col++){
+                CV::line(matrizPersp[linha][col], matrizPersp[linha][col+1]); //linha horizontal
                 if(linha < tam-1){
-                    CV::line(matrizPersp[col][linha], matrizPersp[(col+1)][linha]); //linha vertical
-                    CV::line(matrizPersp[col][linha], matrizPersp[(col+1)][(linha+1)%tam]); //linha diagonal
+                    CV::line(matrizPersp[linha][col], matrizPersp[linha+1][col]); //linha vertical
+                    CV::line(matrizPersp[linha][col], matrizPersp[linha+1][col+1]); //linha diagonal
+                } else if(linha < tam-1){
+                    CV::line(matrizPersp[linha][col], matrizPersp[0][col]); //linha vertical
                 }
-                CV::line(matrizPersp[col][linha], matrizPersp[col][(linha+1)%tam]); //linha horizontal
-                #endif
 
-                #if 0
-                if (col+1 == rot){
-                    CV::line(matrizPersp[col][linha], matrizPersp[0][linha]);
+                if(col < rot && linha < tam-1){
+
                 } else {
-                    CV::line(matrizPersp[col][linha], matrizPersp[col+1][linha]);
+                    //CV::line(matrizPersp[col][linha], matrizPersp[col+1][0]); //linha diagonal
                 }
-                if (linha+1 < tam){
-                    CV::line(matrizPersp[col][linha], matrizPersp[col][linha+1]);
-                }
-                #endif
-
-            CV::line(matrizPersp[col][linha], matrizPersp[col][linha+1]); //linha horizontal
-            if(col+1 > rot){
-                CV::line(matrizPersp[col][linha], matrizPersp[(0)][linha]); //linha vertical
-            } else {
-                CV::line(matrizPersp[col][linha], matrizPersp[(col+1)][linha]); //linha vertical
-            }
-
-            //CV::line(matrizPersp[col][linha], matrizPersp[(col+1)%rot][(linha+1)%tam]); //linha diagonal
             }
         }
-       /* for(int i = 0; i < tam && ((i+1) != 0); i ++){
-
-            CV::line(matrizPersp[rot+1][i], matrizPersp[rot+1][(i+1)]); //linha horizontal
-            CV::line(matrizPersp[rot+1][i], matrizPersp[0][i]); //linha vertical
-            CV::line(matrizPersp[rot+1][i], matrizPersp[0][(i+1)]); //linha diagonal
-        }*/
    }
 
 };

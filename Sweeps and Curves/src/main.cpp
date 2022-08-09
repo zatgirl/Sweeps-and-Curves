@@ -45,6 +45,7 @@ float ajusted = -100, ajustez = 20;
 //Scene *scene;
 Sweep *sweep;
 Perspective *perspective;
+Vector2 mousep;
 
 //Frames *frames;
 
@@ -58,8 +59,9 @@ void render()
         //printf("Create Sweep\n");
         perspective->persp(sweep->matrizPoints, sweep->tam, sweep->rot, ajusted);
         //printf("p2\n");
-        perspective->render();
+        perspective->render(mousep);
         BE::Curva(controlPoints);
+        //perspective->whatposition(mousep);
     }
 
     //scene->render();
@@ -112,6 +114,8 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
 //        scene->screenWidth = screenWidth;
 
     }
+
+
 }
 
 int main(void)
