@@ -15,7 +15,7 @@ class Perspective
     Vector2 matrizPersp[100][300];
     int tam, rot;
 
-    void render(Vector2 mouse){
+    void render(){
         for(int i = 0; i < tam; i++){
             for(int j = 0; j < rot+1; j++){
                 //CV::color(1+j);
@@ -23,7 +23,6 @@ class Perspective
             }
         }
         wire();
-        whatposition(mouse);
     }
 
     Vector2 projeta(Vector3 p, float _d)
@@ -38,7 +37,7 @@ class Perspective
    Vector2 translacao(Vector2 point){
        Vector2 resp;
        resp.x = point.x + 600;
-       resp.y = point.y + 118;
+       resp.y = point.y + 105;
        return resp;
    }
 
@@ -54,17 +53,7 @@ class Perspective
       }
    }
 
-   void whatposition(Vector2 position){
-        for(int col = 0; col < rot; col++){
-            for(int linha = 0; linha < tam; linha++){
-                    if(matrizPersp[col][linha].x == position.x && matrizPersp[col][linha].y == position.y){
-                        //printf("matrizPersp[%d][%d]\n", matrizPersp[col][linha].x, matrizPersp[col][linha].y);
-                    }
-            }
-        }
-   }
-
-   void wire(bool mola){
+   void wire(){
         CV::color(0.7,0.7,0.7);
         for(int linha = 0; linha <= tam; linha++){
             for(int col = 0; col <= rot; col++){

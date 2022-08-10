@@ -18,17 +18,28 @@ Botao *decreaseRot = NULL;
 Botao *perspectiv = NULL;
 Botao *create = NULL;
 Botao *clean = NULL;
-//Sweep *sweep;
+Botao *boxmenus = NULL;
+
+Sweep *sweep;
+Perspective *perspective;
 
 class Scene
 {
 public:
     int screenWidth, screenHeight;
-    std::vector<Vector2*> montain;
-    bool pass = true;
-    bool createSt = true, perspectiveSt, click;
-    float vxLeft[3], vyLeft[3], vxRight[3], vyRight[3], vxCenter[3], vyCenter[3];
+    ///variáveis controladas pela main.cpp
+    std::vector <Vector3> _controlPoints;
+    std::vector <Vector3> _curvePoints;
+    float _ajusted = -1200, _ajustez = -1200;
+    int _rotacoes = 8, _pointsInCurve = 8;
+    bool translacional;
     int mouseX, mouseY, mouseSt;
+
+    ///variáveis utilizadas na classe
+    bool pass = true;
+    bool createSt = true, perspectiveSt = false, boxmenusSt = false, click;
+    int selectMenu, selectMenuCreate, selectMenuPerspective;
+    float vxLeft[3], vyLeft[3], vxRight[3], vyRight[3], vxCenter[3], vyCenter[3];
     int points = 8, rotations = 9;
 
     Scene(){
@@ -37,19 +48,25 @@ public:
     Scene(int _screenWidth, int _screenHeight){
         this->screenWidth  = _screenWidth;
         this->screenHeight = _screenHeight;
+
+        sweep = new Sweep();
+        perspective = new Perspective();
     }
 
     void render(){
         ///CartesianScene Default
         UI();
         ManagerMenu();
-
         if(createSt){
             CartesianScene();
-            if(mouseSt == 0){
-                //sweep->render();
+            _curvePoints.clear();
+             if(_controlPoints.size() > 3){
+                _curvePoints = BE::Curva(_controlPoints, _pointsInCurve);
+                sweep->CreateSweep(_curvePoints, _ajustez, _rotacoes);
+                perspective->persp(sweep->matrizPoints, sweep->tam, sweep->rot, _ajusted);
+                perspective->render();
+                BE::Curva(_controlPoints);
             }
-
         }
         if(perspectiveSt){
             PerspectiveScene();
@@ -61,14 +78,16 @@ public:
         Botao *menuCreate[] = {clean};
         Botao *menuPerspective[] = {increasePoints, decreasePoints, increaseRot, decreaseRot};
         if(mouseSt == 1){
-            createSt = (menu[0]->Colidiu(mouseX,mouseY) ? true : false);
-            perspectiveSt = (menu[1]->Colidiu(mouseX,mouseY) ? true : false);
+            createSt = (menu[0]->Colidiu(mouseX,mouseY)) ? true : createSt;
+            perspectiveSt = (menu[1]->Colidiu(mouseX,mouseY)) ? true : perspectiveSt;
+            //boxmenusSt = (menu[3]->Colidiu(mouseX,mouseY)) ? true : false;
             points = (menuPerspective[0]->Colidiu(mouseX,mouseY) ? points + 1 : points);
             points = (menuPerspective[1]->Colidiu(mouseX,mouseY) ? points - 1 : points);
             rotations = (menuPerspective[2]->Colidiu(mouseX,mouseY) ? rotations + 1 : rotations);
             rotations = (menuPerspective[3]->Colidiu(mouseX,mouseY) ? rotations + 1 : rotations);
             if (menuCreate[0]->Colidiu(mouseX,mouseY)){
-                //sweep->clean = true;
+                _curvePoints.clear();
+                _controlPoints.clear();
             }
         }
     }
@@ -78,6 +97,8 @@ public:
         CV::color(0.827, 0.827, 0.827);
         CV::rectFill(0,0,screenWidth,screenHeight);
         ///Menu
+        boxmenus = new Botao(0, screenHeight - 27, 300, 35, "BoudingMenus", 0,0,0);
+        //boxmenus->Draw();
         create = new Botao(0,screenHeight - 27, 150, 25, "Create", 0.752, 0.752, 0.752);
         create->Draw();
         perspectiv = new Botao(155, screenHeight - 27, 150, 25, "Perspective", 0.752, 0.752, 0.752);
@@ -87,13 +108,6 @@ public:
         decreasePoints = new Botao(70, screenHeight - 100, 25, 25, ">", 0.254, 0.411, 1);
         increaseRot = new Botao(10, screenHeight - 150, 25, 25, "<", 0.254, 0.411, 1);
         decreaseRot = new Botao(70, screenHeight - 150, 25, 25, ">", 0.254, 0.411, 1);
-
-        if(mouseSt == 0){
-//            sweep->mouseX = this->mouseX;
- //           sweep->mouseY = this->mouseY;
- //           sweep->mouseSt = this->mouseSt;
-        }
-
     }
 
     void CartesianScene(){
@@ -157,10 +171,10 @@ public:
     void viewFrames(float fps, int screenWidth, int screenHeight){
         char* tempFtoChar = (char*)malloc(5);
         CV::color(1,1,0);
-        CV::rectFill(0,screenHeight-22, 50, screenHeight);
+        CV::rectFill(screenWidth-51,screenHeight-23, screenWidth, screenHeight-3);
         std::sprintf(tempFtoChar, "%.2f", fps);
         CV::color(0,0,0);
-        CV::text(0,screenHeight-20, tempFtoChar);
+        CV::text(screenWidth-51,screenHeight-20, tempFtoChar);
     }
 
     void viewInstructions(int screenWidth, int screenHeight){
@@ -169,6 +183,7 @@ public:
         CV::text(0, screenHeight-80, "[>] Aumenta velocidade");
         CV::text(0, screenHeight-100, "[<] Diminui velocidade");
     }
+
 };
 
 
