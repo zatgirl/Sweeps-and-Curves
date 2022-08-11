@@ -52,6 +52,7 @@ class Perspective
              matrizPersp[x][z] = translacao(projeta(points[x][z], _d));
          }
          matrizPersp[x][_rot+1] = matrizPersp[x][1];
+         matrizOrthogonal[x][_rot+1].set(points[x][1].x, points[x][1].y);
       }
    }
 

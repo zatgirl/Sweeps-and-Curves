@@ -45,7 +45,6 @@ void render()
     scene->render();
     fps = frames->getFrames();
     scene->viewFrames(fps, screenWidth, screenHeight);
-    //scene->viewInstructions(screenWidth, screenHeight);
 }
 
 void keyboard(int key)

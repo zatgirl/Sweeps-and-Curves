@@ -31,6 +31,7 @@ class Scene
 public:
     int screenWidth, screenHeight;
     ///variáveis controladas pela main.cpp
+    std::vector <Vector3> _controlPointsBackup;
     std::vector <Vector3> _controlPoints;
     std::vector <Vector3> _curvePoints;
     float _ajusted = -1200, _ajustez = -1200;
@@ -38,14 +39,11 @@ public:
     bool _translacional = false, _rotacional = true;
     int mouseX, mouseY, mouseSt;
 
+    ///variáveis controladas pela classe
+    bool createSt = true, perspectiveSt = false, boxmenusSt = false, click;
     Vector2 BoundingCurveP1, BoundingCurveP2;
     Vector2 BoundingOrthogonalP1, BoundingOrthogonalP2;
-    ///variáveis utilizadas na classe
-    bool pass = true;
-    bool createSt = true, perspectiveSt = false, boxmenusSt = false, click;
-    int selectMenu, selectMenuCreate, selectMenuPerspective;
-    float vxLeft[3], vyLeft[3], vxRight[3], vyRight[3], vxCenter[3], vyCenter[3];
-    int points = 8, rotations = 9;
+
 
     Scene(){
     }
@@ -64,12 +62,10 @@ public:
 
     void render(){
         ///CartesianScene Default
+        _controlPointsBackup = (_controlPoints.size() > 1) ? _controlPoints : _controlPointsBackup;
         UI();
         ManagerMenu();
-        _curvePoints.clear();
-        _curvePoints = BE::Curva(_controlPoints, _pointsInCurve);
-        sweep->CreateSweep(_curvePoints, _ajustez, _rotacoes);
-        perspective->persp(sweep->matrizPoints, sweep->tam, sweep->rot, _ajusted);
+        load();
         if(createSt){
             CartesianScene();
             BE::Curva(_controlPoints);
@@ -78,7 +74,19 @@ public:
         if(perspectiveSt){
             PerspectiveScene();
             perspective->render();
+            viewInstructions(screenWidth, screenHeight);
+            ///Caso haja alteração em alguma variável crítica, recupera valores do backup
+            if(_controlPoints.size() < 1){
+                _controlPoints = _controlPointsBackup;
+            }
         }
+    }
+
+    void load(){
+        _curvePoints.clear();
+        _curvePoints = BE::Curva(_controlPoints, _pointsInCurve);
+        sweep->CreateSweep(_curvePoints, _ajustez, _rotacoes);
+        perspective->persp(sweep->matrizPoints, sweep->tam, sweep->rot, _ajusted);
     }
 
     void ManagerMenu(){
@@ -104,10 +112,10 @@ public:
             }
             _maxPointsInBezier = (menuCreate[1]->Colidiu(mouseX,mouseY) ? _maxPointsInBezier + 1 : _maxPointsInBezier);
             _maxPointsInBezier = (menuCreate[2]->Colidiu(mouseX,mouseY) ? _maxPointsInBezier - 1 : _maxPointsInBezier);
-            points = (menuPerspective[0]->Colidiu(mouseX,mouseY) ? points + 1 : points);
-            points = (menuPerspective[1]->Colidiu(mouseX,mouseY) ? points - 1 : points);
-            rotations = (menuPerspective[2]->Colidiu(mouseX,mouseY) ? rotations + 1 : rotations);
-            rotations = (menuPerspective[3]->Colidiu(mouseX,mouseY) ? rotations - 1 : rotations);
+            _pointsInCurve = (menuPerspective[0]->Colidiu(mouseX,mouseY) ? _pointsInCurve + 1 : _pointsInCurve);
+            _pointsInCurve = (menuPerspective[1]->Colidiu(mouseX,mouseY) ? _pointsInCurve - 1 : _pointsInCurve);
+            _rotacoes = (menuPerspective[2]->Colidiu(mouseX,mouseY) ? _rotacoes + 1 : _rotacoes);
+            _rotacoes = (menuPerspective[3]->Colidiu(mouseX,mouseY) ? (((_rotacoes - 1) <= 1) ? _rotacoes : _rotacoes -= 1) : _rotacoes);
             if (menuCreate[0]->Colidiu(mouseX,mouseY)){
                 _curvePoints.clear();
                 _controlPoints.clear();
@@ -187,27 +195,28 @@ public:
 
         ///Parametrização da curva
         CV::color(0);
-        CV::text(10, screenHeight - 70, "Rotations");
-
-        increasePoints->Draw();
-        CV::color(1,1,1);
-        CV::rectFill(40, screenHeight - 100, 65, screenHeight - 75);
-        CV::color(0);
-        char* tempFtoChar = (char*)malloc(5);
-        std::sprintf(tempFtoChar, "%d", points);
-        CV::text(49, screenHeight - 95, tempFtoChar);
-        decreasePoints->Draw();
-        CV::color(0);
-        CV::text(10, screenHeight - 120, "Estimated Points In Curve");
+        CV::text(10, screenHeight - 120, "ROTATIONS");
 
         increaseRot->Draw();
         CV::color(1,1,1);
         CV::rectFill(40, screenHeight - 150, 65, screenHeight - 125);
         CV::color(0);
-        char* tempFtoChar2 = (char*)malloc(5);
-        std::sprintf(tempFtoChar2, "%d", rotations);
-        CV::text(49, screenHeight - 145, tempFtoChar2);
+        char* tempFtoChar = (char*)malloc(5);
+        std::sprintf(tempFtoChar, "%d", _rotacoes);
+        CV::text(49, screenHeight - 145, tempFtoChar);
         decreaseRot->Draw();
+        CV::color(0);
+
+
+        CV::text(10, screenHeight - 70, "ESTIMATED POINTS IN CURVE");
+        increasePoints->Draw();
+        CV::color(1,1,1);
+        CV::rectFill(40, screenHeight - 100, 65, screenHeight - 75);
+        CV::color(0);
+        char* tempFtoChar2 = (char*)malloc(5);
+        std::sprintf(tempFtoChar2, "%d", _pointsInCurve);
+        CV::text(49, screenHeight - 95, tempFtoChar2);
+        decreasePoints->Draw();
     }
 
     void viewFrames(float fps, int screenWidth, int screenHeight){
@@ -220,13 +229,14 @@ public:
     }
 
     void viewInstructions(int screenWidth, int screenHeight){
-        CV::text(0, screenHeight-40, "[+] Adiciona raios na bicicleta");
-        CV::text(0, screenHeight-60, "[-] Remove raios na bicicleta");
-        CV::text(0, screenHeight-80, "[>] Aumenta velocidade");
-        CV::text(0, screenHeight-100, "[<] Diminui velocidade");
+        CV::color(0 );
+        CV::text(10, screenHeight-180, "AJUSTES OPCIONAIS");
+        CV::text(10, screenHeight-200, "[a] DECREMENTA D");
+        CV::text(10, screenHeight-220, "[d] INCREMENTA D");
+        CV::text(10, screenHeight-240, "[s] DECREMENTA Z");
+        CV::text(10, screenHeight-260, "[w] INCREMENTA Z");
     }
 
 };
-
 
 #endif // __SCENE__H___
