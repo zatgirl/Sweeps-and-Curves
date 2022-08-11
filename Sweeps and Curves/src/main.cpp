@@ -94,31 +94,35 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
     static int posvetor = 0;
     static bool click = false;
 
-    if(state == 0){
-        if(scene->_controlPoints.size() < 5){
-            scene->_controlPoints.push_back(Vector3(x,y,0));
-            printf("x: %d, y: %d\n", x,y);
-        }
-        ///Testa se o click ocorreu em cima de algum ponto de controle da curva
-        for(int i = 0; i < scene->_controlPoints.size(); i ++){
-            if((sqrt(pow(scene->_controlPoints[i].x - x, 2) + pow(scene->_controlPoints[i].y - y, 2))) < 8){
-                posvetor = i;
-                click = true;
+    if(((x > scene->BoundingCurveP1.x) && (x < scene->BoundingCurveP2.x)) && ((y > scene->BoundingCurveP1.y) && (y < scene->BoundingCurveP2.y))){
+        if(state == 0){
+            ///Adiciona a quantidade de pontos especificada pelo usuario
+            if(scene->_controlPoints.size() < scene->_maxPointsInBezier){
+                scene->_controlPoints.push_back(Vector3(x,y,0));
+                printf("x: %d, y: %d\n", x,y);
             }
+            ///Testa se o click ocorreu em cima de algum ponto de controle da curva
+            for(int i = 0; i < scene->_controlPoints.size(); i ++){
+                if((sqrt(pow(scene->_controlPoints[i].x - x, 2) + pow(scene->_controlPoints[i].y - y, 2))) < 8){
+                    posvetor = i;
+                    click = true;
+                }
+            }
+            ///Atualiza coordenadas de tela com clique se necessário
+            scene->screenHeight = screenHeight;
+            scene->screenWidth = screenWidth;
         }
-        ///Atualiza coordenadas de tela com clique se necessário
-        scene->screenHeight = screenHeight;
-        scene->screenWidth = screenWidth;
-    }
 
-    ///Enquanto segura o click e arrasta, fica atualizando o valor do ponto selecionado, até que o botão seja solto
-    if((state == -2) && (click)){
-        scene->_controlPoints[posvetor].set(x,y,0);
+        ///Enquanto segura o click e arrasta, fica atualizando o valor do ponto selecionado, até que o botão seja solto
+        if((state == -2) && (click)){
+            scene->_controlPoints[posvetor].set(x,y,0);
+        }
+        if((state == 1) && (click)){
+            scene->_controlPoints[posvetor].set(x,y,0);
+            click = false;
+        }
     }
-    if((state == 1) && (click)){
-        scene->_controlPoints[posvetor].set(x,y,0);
-        click = false;
-    }
+    //printf("x: %d, y: %d\n", x,y);
 }
 
 int main(void)

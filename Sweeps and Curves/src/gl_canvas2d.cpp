@@ -108,6 +108,16 @@ void CV::rect( float x1, float y1, float x2, float y2 )
    glEnd();
 }
 
+void CV::rect(Vector2 P1, Vector2 P2 )
+{
+   glBegin(GL_LINE_LOOP);
+      glVertex2d(P1.x, P1.y);
+      glVertex2d(P1.x, P2.y);
+      glVertex2d(P2.x, P2.y);
+      glVertex2d(P2.x, P1.y);
+   glEnd();
+}
+
 void CV::rectFill( float x1, float y1, float x2, float y2 )
 {
    glBegin(GL_QUADS);

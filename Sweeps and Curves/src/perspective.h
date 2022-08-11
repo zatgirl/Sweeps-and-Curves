@@ -13,6 +13,7 @@ class Perspective
 {
  public:
     Vector2 matrizPersp[100][300];
+    Vector2 matrizOrthogonal[100][300];
     int tam, rot;
 
     void render(){
@@ -47,6 +48,7 @@ class Perspective
       for(int x=0; x < _tam; x++){
          for(int z=0; z < _rot+1; z++)
          {
+             matrizOrthogonal[x][z].set(points[x][z].x, points[x][z].y);
              matrizPersp[x][z] = translacao(projeta(points[x][z], _d));
          }
          matrizPersp[x][_rot+1] = matrizPersp[x][1];
@@ -63,6 +65,22 @@ class Perspective
                     CV::line(matrizPersp[linha][col], matrizPersp[linha+1][col+1]); //linha diagonal
                 } else if(linha < tam - 1){
                     CV::line(matrizPersp[linha][col], matrizPersp[0][col]); //linha vertical
+                }
+            }
+        }
+   }
+
+   void wireOrthogonal(){
+        CV::color(1,1,1);
+        int offsetx = 900, offsety = 60;
+        for(int linha = 0; linha <= tam; linha++){
+            for(int col = 0; col <= rot; col++){
+                CV::line(matrizOrthogonal[linha][col].x + offsetx, matrizOrthogonal[linha][col].y + offsety, matrizOrthogonal[linha][col+1].x + offsetx, matrizOrthogonal[linha][col+1].y + offsety); //linha horizontal
+                if(linha < tam - 1){
+                    CV::line(matrizOrthogonal[linha][col].x + offsetx, matrizOrthogonal[linha][col].y + offsety, matrizOrthogonal[linha+1][col].x + offsetx, matrizOrthogonal[linha+1][col].y + offsety); //linha vertical
+                    CV::line(matrizOrthogonal[linha][col].x + offsetx, matrizOrthogonal[linha][col].y + offsety, matrizOrthogonal[linha+1][col+1].x + offsetx, matrizOrthogonal[linha+1][col+1].y + offsety); //linha diagonal
+                } else if(linha < tam - 1){
+                    CV::line(matrizOrthogonal[linha][col].x + offsetx, matrizOrthogonal[linha][col].y + offsety, matrizOrthogonal[0][col].x + offsetx, matrizOrthogonal[0][col].y + offsety); //linha vertical
                 }
             }
         }

@@ -38,6 +38,8 @@ public:
     bool _translacional = false, _rotacional = true;
     int mouseX, mouseY, mouseSt;
 
+    Vector2 BoundingCurveP1, BoundingCurveP2;
+    Vector2 BoundingOrthogonalP1, BoundingOrthogonalP2;
     ///variáveis utilizadas na classe
     bool pass = true;
     bool createSt = true, perspectiveSt = false, boxmenusSt = false, click;
@@ -54,24 +56,27 @@ public:
 
         sweep = new Sweep();
         perspective = new Perspective();
+        BoundingCurveP1.set(40,50);
+        BoundingCurveP2.set(500,430);
+        BoundingOrthogonalP1.set(550,50);
+        BoundingOrthogonalP2.set(1160,600);
     }
 
     void render(){
         ///CartesianScene Default
         UI();
         ManagerMenu();
+        _curvePoints.clear();
+        _curvePoints = BE::Curva(_controlPoints, _pointsInCurve);
+        sweep->CreateSweep(_curvePoints, _ajustez, _rotacoes);
+        perspective->persp(sweep->matrizPoints, sweep->tam, sweep->rot, _ajusted);
         if(createSt){
             CartesianScene();
             BE::Curva(_controlPoints);
-            //perspectiveSt = false;
+            perspective->wireOrthogonal();
         }
         if(perspectiveSt){
             PerspectiveScene();
-            //createSt = false;
-            _curvePoints.clear();
-            _curvePoints = BE::Curva(_controlPoints, _pointsInCurve);
-            sweep->CreateSweep(_curvePoints, _ajustez, _rotacoes);
-            perspective->persp(sweep->matrizPoints, sweep->tam, sweep->rot, _ajusted);
             perspective->render();
         }
     }
@@ -97,8 +102,8 @@ public:
                 _rotacional = false;
                 _translacional = true;
             }
-            _maxPointsInBezier = (menuCreate[1]->Colidiu(mouseX,mouseY) ? _pointsInCurve + 1 : _pointsInCurve);
-            _maxPointsInBezier = (menuCreate[2]->Colidiu(mouseX,mouseY) ? _pointsInCurve - 1 : _pointsInCurve);
+            _maxPointsInBezier = (menuCreate[1]->Colidiu(mouseX,mouseY) ? _maxPointsInBezier + 1 : _maxPointsInBezier);
+            _maxPointsInBezier = (menuCreate[2]->Colidiu(mouseX,mouseY) ? _maxPointsInBezier - 1 : _maxPointsInBezier);
             points = (menuPerspective[0]->Colidiu(mouseX,mouseY) ? points + 1 : points);
             points = (menuPerspective[1]->Colidiu(mouseX,mouseY) ? points - 1 : points);
             rotations = (menuPerspective[2]->Colidiu(mouseX,mouseY) ? rotations + 1 : rotations);
@@ -134,25 +139,11 @@ public:
         ///Fundo
         CV::color(0);
         CV::rectFill(0,0,screenWidth,screenHeight/17*16.5);
-        ///Eixos
-        CV::color(1,0,0);
-        CV::line(20,screenHeight/10*2, screenWidth - 20, screenHeight/10*2);
-        CV::line(screenWidth/10*5, 20, screenWidth/10*5, screenHeight - 40);
-        vxLeft[0] = 10;                          vyLeft[0] = (screenHeight/10*2);
-        vxLeft[1] = 20;                          vyLeft[1] = (screenHeight/10*2)-10;
-        vxLeft[2] = 20;                          vyLeft[2] = (screenHeight/10*2)+10;
-        CV::polygonFill(vxLeft,vyLeft,3);
-        CV::text(10,(screenHeight/10*2)-20, "-X");
-        vxRight[0] = screenWidth - 10;           vyRight[0] = (screenHeight/10*2);
-        vxRight[1] = screenWidth - 20;           vyRight[1] = (screenHeight/10*2)-10;
-        vxRight[2] = screenWidth - 20;           vyRight[2] = (screenHeight/10*2)+10;
-        CV::polygonFill(vxRight,vyRight,3);
-        CV::text(screenWidth - 20,(screenHeight/10*2)-20, "X");
-        vxCenter[0] = screenWidth/10*5;          vyCenter[0] = screenHeight - 30;
-        vxCenter[1] = (screenWidth/10*5)-10;     vyCenter[1] = screenHeight - 40;
-        vxCenter[2] = (screenWidth/10*5)+10;     vyCenter[2] = screenHeight - 40;
-        CV::polygonFill(vxCenter,vyCenter,3);
-        CV::text((screenWidth/10*5)+10,screenHeight - 40, "Y");
+
+        CV::color(1,1,1);
+        CV::rect(BoundingCurveP1, BoundingCurveP2);
+        CV::text(BoundingOrthogonalP1.x, BoundingOrthogonalP2.y+10, "ORTHOGONAL VIEW");
+        CV::rect(BoundingOrthogonalP1, BoundingOrthogonalP2);
 
         clean = new Botao(10, screenHeight - 100, 100, 25, "Clean", 0.254, 0.411, 1);
         clean->Draw();

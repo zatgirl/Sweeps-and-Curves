@@ -31,7 +31,7 @@ public:
 
     //desenha um retangulo alinhado nos eixos x e y
     static void rect( float x1, float y1, float x2, float y2 ); //coordenadas do retangulo x1, y1, x2, y2
-    static void rect( Vector2 p1, Vector2 p2 ); //coordenadas do retangulo (p1, p2) - TO DO
+    static void rect( Vector2 P1, Vector2 P2 ); //coordenadas do retangulo (p1, p2) - TO DO
 
     static void rectFill( float x1, float y1, float x2, float y2 ); //coordenadas do retangulo x1, y1, x2, y2
     static void rectFill( Vector2 p1, Vector2 p2 ); //coordenadas do retangulo (p1, p2)
