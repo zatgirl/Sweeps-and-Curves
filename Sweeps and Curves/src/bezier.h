@@ -78,11 +78,7 @@ class BE
           ptemp.set(0,0,0);
           for(int ponto = 0; ponto < quantPontos; ponto++){
              ptemp = ((v[ponto]) * CalcBezier(ponto, t, quantPontos) + ptemp);
-             CV::color(1,0,0);
-             CV::circleFill(v[ponto], 6, 10);
           }
-          CV::color(3);
-          CV::point(ptemp.x,ptemp.y);
           p.push_back(ptemp);
        }
        return p;

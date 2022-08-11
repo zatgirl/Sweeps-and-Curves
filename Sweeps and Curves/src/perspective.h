@@ -54,7 +54,7 @@ class Perspective
    }
 
    void wire(){
-        CV::color(0.7,0.7,0.7);
+        CV::color(0);
         for(int linha = 0; linha <= tam; linha++){
             for(int col = 0; col <= rot; col++){
                 CV::line(matrizPersp[linha][col], matrizPersp[linha][col+1]); //linha horizontal

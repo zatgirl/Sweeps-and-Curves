@@ -32,10 +32,8 @@
 #include "Vector3.h"
 #include "scene.h"
 #include "Frames.h"
-#include "sweep.h"
-#include "bezier.h"
 
-int screenWidth = 1200, screenHeight = 588;//largura e altura inicial da tela . Alteram com o redimensionamento de tela.
+int screenWidth = 1200, screenHeight = 700;
 bool click = false;
 float fps;
 

@@ -11,6 +11,10 @@
 #include "Botao.h"
 #include "sweep.h"
 
+Botao *checkboxSweepRotacional = NULL;
+Botao *checkboxSweepTranslacional = NULL;
+Botao *increasePointsInBezier = NULL;
+Botao *decreasePointsInBezier = NULL;
 Botao *increasePoints = NULL;
 Botao *decreasePoints = NULL;
 Botao *increaseRot = NULL;
@@ -18,7 +22,6 @@ Botao *decreaseRot = NULL;
 Botao *perspectiv = NULL;
 Botao *create = NULL;
 Botao *clean = NULL;
-Botao *boxmenus = NULL;
 
 Sweep *sweep;
 Perspective *perspective;
@@ -31,8 +34,8 @@ public:
     std::vector <Vector3> _controlPoints;
     std::vector <Vector3> _curvePoints;
     float _ajusted = -1200, _ajustez = -1200;
-    int _rotacoes = 8, _pointsInCurve = 8;
-    bool translacional;
+    int _rotacoes = 8, _pointsInCurve = 8, _maxPointsInBezier = 5;
+    bool _translacional = false, _rotacional = true;
     int mouseX, mouseY, mouseSt;
 
     ///variáveis utilizadas na classe
@@ -59,32 +62,47 @@ public:
         ManagerMenu();
         if(createSt){
             CartesianScene();
-            _curvePoints.clear();
-             if(_controlPoints.size() > 3){
-                _curvePoints = BE::Curva(_controlPoints, _pointsInCurve);
-                sweep->CreateSweep(_curvePoints, _ajustez, _rotacoes);
-                perspective->persp(sweep->matrizPoints, sweep->tam, sweep->rot, _ajusted);
-                perspective->render();
-                BE::Curva(_controlPoints);
-            }
+            BE::Curva(_controlPoints);
+            //perspectiveSt = false;
         }
         if(perspectiveSt){
             PerspectiveScene();
+            //createSt = false;
+            _curvePoints.clear();
+            _curvePoints = BE::Curva(_controlPoints, _pointsInCurve);
+            sweep->CreateSweep(_curvePoints, _ajustez, _rotacoes);
+            perspective->persp(sweep->matrizPoints, sweep->tam, sweep->rot, _ajusted);
+            perspective->render();
         }
     }
 
     void ManagerMenu(){
         Botao *menu[] = {create, perspectiv};
-        Botao *menuCreate[] = {clean};
+        Botao *menuCreate[] = {clean, increasePointsInBezier, decreasePointsInBezier, checkboxSweepRotacional, checkboxSweepTranslacional};
         Botao *menuPerspective[] = {increasePoints, decreasePoints, increaseRot, decreaseRot};
         if(mouseSt == 1){
-            createSt = (menu[0]->Colidiu(mouseX,mouseY)) ? true : createSt;
-            perspectiveSt = (menu[1]->Colidiu(mouseX,mouseY)) ? true : perspectiveSt;
-            //boxmenusSt = (menu[3]->Colidiu(mouseX,mouseY)) ? true : false;
+            if(menu[0]->Colidiu(mouseX,mouseY)){
+                createSt = true;
+                perspectiveSt = false;
+            }
+            if(menu[1]->Colidiu(mouseX,mouseY)){
+                createSt = false;
+                perspectiveSt = true;
+            }
+            if(menuCreate[3]->Colidiu(mouseX,mouseY)){
+                _rotacional = true;
+                _translacional = false;
+            }
+            if(menuCreate[4]->Colidiu(mouseX,mouseY)){
+                _rotacional = false;
+                _translacional = true;
+            }
+            _maxPointsInBezier = (menuCreate[1]->Colidiu(mouseX,mouseY) ? _pointsInCurve + 1 : _pointsInCurve);
+            _maxPointsInBezier = (menuCreate[2]->Colidiu(mouseX,mouseY) ? _pointsInCurve - 1 : _pointsInCurve);
             points = (menuPerspective[0]->Colidiu(mouseX,mouseY) ? points + 1 : points);
             points = (menuPerspective[1]->Colidiu(mouseX,mouseY) ? points - 1 : points);
             rotations = (menuPerspective[2]->Colidiu(mouseX,mouseY) ? rotations + 1 : rotations);
-            rotations = (menuPerspective[3]->Colidiu(mouseX,mouseY) ? rotations + 1 : rotations);
+            rotations = (menuPerspective[3]->Colidiu(mouseX,mouseY) ? rotations - 1 : rotations);
             if (menuCreate[0]->Colidiu(mouseX,mouseY)){
                 _curvePoints.clear();
                 _controlPoints.clear();
@@ -97,8 +115,6 @@ public:
         CV::color(0.827, 0.827, 0.827);
         CV::rectFill(0,0,screenWidth,screenHeight);
         ///Menu
-        boxmenus = new Botao(0, screenHeight - 27, 300, 35, "BoudingMenus", 0,0,0);
-        //boxmenus->Draw();
         create = new Botao(0,screenHeight - 27, 150, 25, "Create", 0.752, 0.752, 0.752);
         create->Draw();
         perspectiv = new Botao(155, screenHeight - 27, 150, 25, "Perspective", 0.752, 0.752, 0.752);
@@ -108,6 +124,10 @@ public:
         decreasePoints = new Botao(70, screenHeight - 100, 25, 25, ">", 0.254, 0.411, 1);
         increaseRot = new Botao(10, screenHeight - 150, 25, 25, "<", 0.254, 0.411, 1);
         decreaseRot = new Botao(70, screenHeight - 150, 25, 25, ">", 0.254, 0.411, 1);
+        increasePointsInBezier = new Botao(10, screenHeight - 150, 25, 25, "<", 0.254, 0.411, 1);
+        decreasePointsInBezier = new Botao(70, screenHeight - 150, 25, 25, ">", 0.254, 0.411, 1);
+        checkboxSweepRotacional = new Botao(10, screenHeight - 200, 25, 25, " ", 1, 1, 1);
+        checkboxSweepTranslacional = new Botao(10, screenHeight - 250, 25, 25, " ", 1, 1, 1);
     }
 
     void CartesianScene(){
@@ -136,6 +156,37 @@ public:
 
         clean = new Botao(10, screenHeight - 100, 100, 25, "Clean", 0.254, 0.411, 1);
         clean->Draw();
+
+        ///Ajuste da quantidade de pontos estimados na curva de bezier
+        CV::color(1,1,1);
+        CV::text(10, screenHeight - 120, "MAX POINTS TO DRAW CURVE");
+        increasePointsInBezier->Draw();
+        CV::color(1,1,1);
+        CV::rectFill(40, screenHeight - 150, 65, screenHeight - 125);
+        CV::color(0);
+        char* tempFtoChar3 = (char*)malloc(5);
+        std::sprintf(tempFtoChar3, "%d", _maxPointsInBezier);
+        CV::text(49, screenHeight - 145, tempFtoChar3);
+        decreasePointsInBezier->Draw();
+
+        ///Checkbox para selecionar o tipo de sweep desenhado:
+        /// -> Rotacional: Tacas e donuts;
+        /// -> Translacional: Molas, espirais ---------OBS: Não vai gerar um circulo perfeito por ter utilizado curva de bezier
+        CV::color(1,1,1);
+        CV::text(40, screenHeight - 195, "SWEEP ROTACIONAL");
+        CV::text(40, screenHeight - 245, "SWEEP TRANSLACIONAL");
+        checkboxSweepRotacional->Draw();
+        checkboxSweepTranslacional->Draw();
+        ///Seleção das checkbox
+        CV::color(2);
+        if(_rotacional){
+            CV::line(10, screenHeight - 175, 35, screenHeight - 200);
+            CV::line(10, screenHeight - 200, 35, screenHeight - 175);
+        }
+        if(_translacional){
+            CV::line(10, screenHeight - 225, 35, screenHeight - 250);
+            CV::line(10, screenHeight - 250, 35, screenHeight - 225);
+        }
     }
 
     void PerspectiveScene(){
@@ -145,7 +196,7 @@ public:
 
         ///Parametrização da curva
         CV::color(0);
-        CV::text(10, screenHeight - 70, "Points");
+        CV::text(10, screenHeight - 70, "Rotations");
 
         increasePoints->Draw();
         CV::color(1,1,1);
@@ -156,7 +207,7 @@ public:
         CV::text(49, screenHeight - 95, tempFtoChar);
         decreasePoints->Draw();
         CV::color(0);
-        CV::text(10, screenHeight - 120, "Rotations");
+        CV::text(10, screenHeight - 120, "Estimated Points In Curve");
 
         increaseRot->Draw();
         CV::color(1,1,1);
