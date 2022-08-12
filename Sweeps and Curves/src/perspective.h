@@ -15,6 +15,7 @@ class Perspective
     Vector2 matrizPersp[100][300];
     Vector2 matrizOrthogonal[100][300];
     int tam, rot;
+    bool _translational = false;
 
     void render(){
         for(int i = 0; i < tam; i++){
@@ -49,10 +50,17 @@ class Perspective
          for(int z=0; z < _rot+1; z++)
          {
              matrizOrthogonal[x][z].set(points[x][z].x, points[x][z].y);
-             matrizPersp[x][z] = translacao(projeta(points[x][z], _d));
+             if(_translational){
+                matrizPersp[x][z] = translacao(projeta(points[x][z], _d + 4010));
+             } else {
+                matrizPersp[x][z] = translacao(projeta(points[x][z], _d));
+             }
          }
-         matrizPersp[x][_rot+1] = matrizPersp[x][1];
-         matrizOrthogonal[x][_rot+1].set(points[x][1].x, points[x][1].y);
+         if(!_translational){
+            matrizOrthogonal[x][_rot+1].set(points[x][1].x, points[x][1].y);
+            matrizPersp[x][_rot+1] = matrizPersp[x][1];
+         }
+
       }
    }
 
@@ -60,12 +68,26 @@ class Perspective
         CV::color(0);
         for(int linha = 0; linha <= tam; linha++){
             for(int col = 0; col <= rot; col++){
-                CV::line(matrizPersp[linha][col], matrizPersp[linha][col+1]); //linha horizontal
-                if(linha < tam - 1){
-                    CV::line(matrizPersp[linha][col], matrizPersp[linha+1][col]); //linha vertical
-                    CV::line(matrizPersp[linha][col], matrizPersp[linha+1][col+1]); //linha diagonal
-                } else if(linha < tam - 1){
-                    CV::line(matrizPersp[linha][col], matrizPersp[0][col]); //linha vertical
+                if(_translational){
+                    if(col < rot){
+                        CV::line(matrizPersp[linha][col].x, matrizPersp[linha][col].y, matrizPersp[linha][col+1].x, matrizPersp[linha][col+1].y); //linha horizontal
+                    if((linha < tam - 1))
+                        CV::line(matrizPersp[linha][col].x, matrizPersp[linha][col].y, matrizPersp[linha+1][col].x, matrizPersp[linha+1][col].y); //linha vertical
+                    }
+                    if((col < rot - 1) && (linha < tam - 1)){
+                        CV::line(matrizPersp[linha][col].x, matrizPersp[linha][col].y, matrizPersp[linha+1][col+1].x, matrizPersp[linha+1][col+1].y); //linha diagonal
+                    }
+                    if(((col == rot - 1) && (linha < tam - 1))){
+                        CV::line(matrizPersp[linha][col].x, matrizPersp[linha][col].y, matrizPersp[linha+1][col+1].x, matrizPersp[linha+1][col+1].y); //linha diagonal
+                    }
+                } else {
+                    CV::line(matrizPersp[linha][col], matrizPersp[linha][col+1]); //linha horizontal
+                    if(linha < tam - 1){
+                        CV::line(matrizPersp[linha][col], matrizPersp[linha+1][col]); //linha vertical
+                        CV::line(matrizPersp[linha][col], matrizPersp[linha+1][col+1]); //linha diagonal
+                    } else if(linha < tam - 1 && (_translational)){
+                        CV::line(matrizPersp[linha][col], matrizPersp[0][col]); //linha vertical
+                    }
                 }
             }
         }
@@ -73,15 +95,30 @@ class Perspective
 
    void wireOrthogonal(){
         CV::color(1,1,1);
-        int offsetx = 900, offsety = 60;
+        int offsetx = 855, offsety = 60;
         for(int linha = 0; linha <= tam; linha++){
             for(int col = 0; col <= rot; col++){
-                CV::line(matrizOrthogonal[linha][col].x + offsetx, matrizOrthogonal[linha][col].y + offsety, matrizOrthogonal[linha][col+1].x + offsetx, matrizOrthogonal[linha][col+1].y + offsety); //linha horizontal
-                if(linha < tam - 1){
-                    CV::line(matrizOrthogonal[linha][col].x + offsetx, matrizOrthogonal[linha][col].y + offsety, matrizOrthogonal[linha+1][col].x + offsetx, matrizOrthogonal[linha+1][col].y + offsety); //linha vertical
-                    CV::line(matrizOrthogonal[linha][col].x + offsetx, matrizOrthogonal[linha][col].y + offsety, matrizOrthogonal[linha+1][col+1].x + offsetx, matrizOrthogonal[linha+1][col+1].y + offsety); //linha diagonal
-                } else if(linha < tam - 1){
-                    CV::line(matrizOrthogonal[linha][col].x + offsetx, matrizOrthogonal[linha][col].y + offsety, matrizOrthogonal[0][col].x + offsetx, matrizOrthogonal[0][col].y + offsety); //linha vertical
+                if(_translational){
+                    if(col < rot){
+                        CV::line(matrizOrthogonal[linha][col].x + offsetx, matrizOrthogonal[linha][col].y + offsety, matrizOrthogonal[linha][col+1].x + offsetx, matrizOrthogonal[linha][col+1].y + offsety); //linha horizontal
+                    }
+                    if((linha < tam - 1)){
+                        CV::line(matrizOrthogonal[linha][col].x + offsetx, matrizOrthogonal[linha][col].y + offsety, matrizOrthogonal[linha+1][col].x + offsetx, matrizOrthogonal[linha+1][col].y + offsety); //linha vertical
+                    }
+                    if((col < rot - 1) && (linha < tam - 1)){
+                        CV::line(matrizOrthogonal[linha][col].x + offsetx, matrizOrthogonal[linha][col].y + offsety, matrizOrthogonal[linha+1][col+1].x + offsetx, matrizOrthogonal[linha+1][col+1].y + offsety); //linha diagonal
+                    }
+                    if(((col == rot - 1) && (linha < tam - 1))){
+                        CV::line(matrizOrthogonal[linha][col].x + offsetx, matrizOrthogonal[linha][col].y + offsety, matrizOrthogonal[linha+1][col+1].x + offsetx, matrizOrthogonal[linha+1][col+1].y + offsety); //linha diagonal
+                    }
+                } else {
+                    CV::line(matrizOrthogonal[linha][col].x + offsetx, matrizOrthogonal[linha][col].y + offsety, matrizOrthogonal[linha][col+1].x + offsetx, matrizOrthogonal[linha][col+1].y + offsety); //linha horizontal
+                    if((linha < tam - 1)){
+                        CV::line(matrizOrthogonal[linha][col].x + offsetx, matrizOrthogonal[linha][col].y + offsety, matrizOrthogonal[linha+1][col].x + offsetx, matrizOrthogonal[linha+1][col].y + offsety); //linha vertical
+                        CV::line(matrizOrthogonal[linha][col].x + offsetx, matrizOrthogonal[linha][col].y + offsety, matrizOrthogonal[linha+1][col+1].x + offsetx, matrizOrthogonal[linha+1][col+1].y + offsety); //linha diagonal
+                    } else if(linha < tam - 1){
+                        CV::line(matrizOrthogonal[linha][col].x + offsetx, matrizOrthogonal[linha][col].y + offsety, matrizOrthogonal[0][col].x + offsetx, matrizOrthogonal[0][col].y + offsety); //linha vertical
+                    }
                 }
             }
         }

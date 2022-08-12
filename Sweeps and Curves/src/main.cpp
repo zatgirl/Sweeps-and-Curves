@@ -62,7 +62,13 @@ void keyboard(int key)
         case 115:
             scene->_ajustez -= 10;
             break;
-        case 116:
+        case 109:
+            scene->_amountSpiralSpring += 1;
+            break;
+        case 110:
+            scene->_amountSpiralSpring -= 1;
+            break;
+    /*    case 116:
             scene->_rotacoes += 1;
             break;
         case 114:
@@ -73,7 +79,7 @@ void keyboard(int key)
             break;
         case 111:
             scene->_pointsInCurve += 1;
-            break;
+            break;*/
     }
     printf("ajusted:  %.5f, ajustez: %.5f, rotacoes: %d, pointsincurve: %d\n", scene->_ajusted, scene->_ajustez, scene->_rotacoes, scene->_pointsInCurve);
 }

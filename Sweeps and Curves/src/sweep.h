@@ -19,7 +19,8 @@ class Sweep
     Vector3 matrizPoints[100][360];
     std::vector <Vector2*> ControlPoints;
     std::vector <Vector2*> EstimatedPoints;
-    bool clean = false;
+    bool _translational = false;
+
 
    Vector3 rotacionaY(Vector3 p , float ang)
    {
@@ -39,7 +40,7 @@ class Sweep
        return resp;
    }
 
-    void CreateSweep(std::vector<Vector3> points, float _z, int rotacoes){
+    void CreateSweep(std::vector<Vector3> points, float _z, int rotacoes, int _amountSpiralSpring){
         float ang = 0.0f;
         int stepsweep = 360/rotacoes;
         Vector3 ptemp;
@@ -47,14 +48,26 @@ class Sweep
             ptemp = (points[i]);
             matrizPoints[i][0] = ptemp;
         }
-        for(int linha = 0; linha < points.size(); linha ++){
-            for(int i = 0, col = 1; i < 360; i += stepsweep, col ++){
-                ang = (PI * i)/180;
-                matrizPoints[linha][col] = rotacionaY(matrizPoints[linha][0], ang);
-                matrizPoints[linha][col] = translada(matrizPoints[linha][col], Vector3(0,0, _z));
-                rot = col;
+        if(_translational){
+            for(int linha = 0; linha < points.size(); linha ++){
+                for(int i = 0, col = 1; i < 360; i += stepsweep, col ++){
+                    ang = (PI * i)/(390/_amountSpiralSpring);
+                    matrizPoints[linha][col] = rotacionaY(matrizPoints[linha][0], ang);
+                    matrizPoints[linha][col] = translada(matrizPoints[linha][col], Vector3(0,col+5, _z+4010));
+                    rot = col;
+                }
+                tam = points.size();
             }
-            tam = points.size();
+        } else {
+            for(int linha = 0; linha < points.size(); linha ++){
+                for(int i = 0, col = 1; i < 360; i += stepsweep, col ++){
+                    ang = (PI * i)/180;
+                    matrizPoints[linha][col] = rotacionaY(matrizPoints[linha][0], ang);
+                    matrizPoints[linha][col] = translada(matrizPoints[linha][col], Vector3(0,0, _z));
+                    rot = col;
+                }
+                tam = points.size();
+            }
         }
     }
 

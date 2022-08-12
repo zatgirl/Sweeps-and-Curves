@@ -35,8 +35,8 @@ public:
     std::vector <Vector3> _controlPoints;
     std::vector <Vector3> _curvePoints;
     float _ajusted = -1200, _ajustez = -1200;
-    int _rotacoes = 8, _pointsInCurve = 8, _maxPointsInBezier = 5;
-    bool _translacional = false, _rotacional = true;
+    int _rotacoes = 8, _pointsInCurve = 8, _maxPointsInBezier = 5, _amountSpiralSpring = 4;
+    bool _translational = false, _rotacional = true;
     int mouseX, mouseY, mouseSt;
 
     ///variáveis controladas pela classe
@@ -77,16 +77,24 @@ public:
             viewInstructions(screenWidth, screenHeight);
             ///Caso haja alteração em alguma variável crítica, recupera valores do backup
             if(_controlPoints.size() < 1){
-                _controlPoints = _controlPointsBackup;
+               _controlPoints = _controlPointsBackup;
             }
         }
+       // printf("_control size: %d\n", _controlPoints.size());
+       // printf("_controlbckp size: %d\n", _controlPointsBackup.size());
+        //printf("_curve size: %d\n", _curvePoints.size());
     }
 
     void load(){
         _curvePoints.clear();
         _curvePoints = BE::Curva(_controlPoints, _pointsInCurve);
-        sweep->CreateSweep(_curvePoints, _ajustez, _rotacoes);
-        perspective->persp(sweep->matrizPoints, sweep->tam, sweep->rot, _ajusted);
+
+            sweep->_translational = this->_translational;
+            sweep->CreateSweep(_curvePoints, _ajustez, _rotacoes, this->_amountSpiralSpring);
+            perspective->_translational = this->_translational;
+            perspective->persp(sweep->matrizPoints, sweep->tam, sweep->rot, _ajusted);
+
+
     }
 
     void ManagerMenu(){
@@ -104,11 +112,13 @@ public:
             }
             if(menuCreate[3]->Colidiu(mouseX,mouseY)){
                 _rotacional = true;
-                _translacional = false;
+                _translational = false;
+                _rotacoes = 8;
             }
             if(menuCreate[4]->Colidiu(mouseX,mouseY)){
                 _rotacional = false;
-                _translacional = true;
+                _translational = true;
+                _rotacoes = 156;
             }
             _maxPointsInBezier = (menuCreate[1]->Colidiu(mouseX,mouseY) ? _maxPointsInBezier + 1 : _maxPointsInBezier);
             _maxPointsInBezier = (menuCreate[2]->Colidiu(mouseX,mouseY) ? _maxPointsInBezier - 1 : _maxPointsInBezier);
@@ -182,7 +192,7 @@ public:
             CV::line(10, screenHeight - 175, 35, screenHeight - 200);
             CV::line(10, screenHeight - 200, 35, screenHeight - 175);
         }
-        if(_translacional){
+        if(_translational){
             CV::line(10, screenHeight - 225, 35, screenHeight - 250);
             CV::line(10, screenHeight - 250, 35, screenHeight - 225);
         }
