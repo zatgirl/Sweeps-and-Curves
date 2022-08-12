@@ -16,13 +16,15 @@
 class Fill
 {
  public:
-/*
+#if 0
      // troca duas variaveis de pos
     #define SWAP(x,y) do { (x)=(x)^(y); (y)=(x)^(y); (x)=(x)^(y); } while(0)
 
     // Horizontal line
     static void lcd_hline(int x1, int x2, int y) {
-        if(x1>=x2) SWAP(x1,x2);
+        if(x1>=x2){
+            SWAP(x1,x2);
+        }
         for(;x1<=x2;x1++)
             CV::color(2);
             CV::point(x1,y);
@@ -236,18 +238,18 @@ printf("x1: %d, x0: %d\n", x1, x0);
             if(y>y3) return;
         }
     }
-*/
+#endif
     Fill(){
     }
 
-    int _maxBoxX = std::numeric_limits<float>::min(),
-        _maxBoxY = std::numeric_limits<float>::min(),
-        _minBoxX = std::numeric_limits<float>::max(),
-        _minBoxY = std::numeric_limits<float>::max();
+    int _maxBoxX = std::numeric_limits<int>::min(),
+        _maxBoxY = std::numeric_limits<int>::min(),
+        _minBoxX = std::numeric_limits<int>::max(),
+        _minBoxY = std::numeric_limits<int>::max();
 
-    Vector2 points[3];
 
-    void BoundingBox()
+
+    void BoundingBox(std::vector<Vector2> points)
     {
         for(int idx = 0; idx < 3; idx++)
         {
@@ -276,7 +278,7 @@ printf("x1: %d, x0: %d\n", x1, x0);
         return false;
     }
 
-    bool pointPolygon(Vector2 point)
+    bool pointPolygon(Vector2 point, std::vector<Vector2> points)
     {
         int coll = 0;
         for (int cont = 0; cont < 3; cont++)
@@ -294,27 +296,61 @@ printf("x1: %d, x0: %d\n", x1, x0);
         return true;
     }
 
-    void fillfunction(int x1, int y1, int x2, int y2, int x3, int y3){
-        printf("x1: %d, y1: %d, x2: %d, y2: %d, x3: %d, y3: %d\n", x1,y1,x2,y2,x3,y3);
-        points[0] = (Vector2(x1,y1));
-        points[1] = (Vector2(x2,y2));
-        points[2] = (Vector2(x3,y3));
-
+    //std::vector<Vector2> fillfunction(float x1, float y1, float x2, float y2, float x3, float y3){
+    std::vector<Vector2> fillfunction(Vector2 matrizPoints[100][300], int tam, int rot){
+        std::vector<Vector2> points;
+       // printf("x1: %.2f, y1: %.2f, x2: %.2f, y2: %.2f, x3: %.2f, y3: %.2f\n", x1,y1,x2,y2,x3,y3);
+        //points.push_back(Vector2(x1,y1));
+        //points.push_back(Vector2(x2,y2));
+        //points.push_back(Vector2(x3,y3));
+        //BoundingBox(points);
         Vector2 pos;
-        for(int x = Fill::_minBoxX; x < Fill::_maxBoxX; x ++){
-            for(int y = _minBoxY; y < _maxBoxY; y ++){
-                pos.set(x,y);
-                if (pointPolygon(pos))
-                {
-                    CV::color(2);
-                    CV::point(x,y);
+        std::vector<Vector2>buffer;
+        for(int linha = 0; linha <= tam; linha++){
+            for(int col = 0; col <= rot; col++){
+
+                    points.push_back(Vector2(matrizPoints[linha][col].x, matrizPoints[linha][col].y)); //linha horizontal
+                    if((linha < tam - 1)){
+                        points.push_back(Vector2(matrizPoints[linha+1][col].x, matrizPoints[linha+1][col].y));
+                        points.push_back(Vector2(matrizPoints[linha+1][col+1].x, matrizPoints[linha+1][col+1].y));
+                    } else if(linha < tam - 1){
+                        points.push_back(Vector2(matrizPoints[0][col].x, matrizPoints[0][col].y));
+                    }
+
+                //points.push_back(Vector2(matrizPoints[linha][col].x, matrizPoints[linha][col].y));
+                //points.push_back(Vector2(matrizPoints[linha+1][col].x, matrizPoints[linha+1][col].y));
+                //points.push_back(Vector2(matrizPoints[linha+1][col+1].x, matrizPoints[linha+1][col+1].y));
+                BoundingBox(points);
+                for(int y = _minBoxY; y < _maxBoxY; y ++){
+                    for(int x = _minBoxX; x < _maxBoxX; x ++){
+                        pos.set(x,y);
+                        if (pointPolygon(pos, points))
+                        {
+                            CV::color(2);
+                            //CV::point(x,y);
+                            buffer.push_back(Vector2(x,y));
+                        }
+                    }
                 }
+                points.clear();
             }
         }
+        /*for(int y = _minBoxY; y < _maxBoxY; y ++){
+            for(int x = _minBoxX; x < _maxBoxX; x ++){
+                pos.set(x,y);
+                if (pointPolygon(pos, points))
+                {
+                    CV::color(2);
+                    //CV::point(x,y);
+                    buffer.push_back(Vector2(x,y));
+                }
+            }
+        }*/
+        return buffer;
     }
 
-    void render(int x1, int y1, int x2, int y2, int x3, int y3){
-        fillfunction(x1, y1, x2, y2, x3, y3);
+    void render(float x1, float y1, float x2, float y2, float x3, float y3){
+        //fillfunction(x1, y1, x2, y2, x3, y3);
     }
 
 

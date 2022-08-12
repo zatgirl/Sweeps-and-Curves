@@ -17,6 +17,7 @@ class Sweep
     int mouseX, mouseY, mouseSt;
     int rot, tam;
     Vector3 matrizPoints[100][360];
+    Vector3 matrizPointsRotY[100][360];
     std::vector <Vector2*> ControlPoints;
     std::vector <Vector2*> EstimatedPoints;
     bool _translational = false;
@@ -31,6 +32,15 @@ class Sweep
       return resp;
    }
 
+   Vector3 rotacionaX(Vector3 p , float ang)
+   {
+      Vector3 resp;
+          resp.x = p.x;
+          resp.y = cos(ang)*p.y - sin(ang)*p.z;
+          resp.z = sin(ang)*p.y + cos(ang)*p.z;
+      return resp;
+   }
+
    Vector3 translada(Vector3 p, Vector3 offset)
    {
        Vector3 resp;
@@ -40,7 +50,7 @@ class Sweep
        return resp;
    }
 
-    void CreateSweep(std::vector<Vector3> points, float _z, int rotacoes, int _amountSpiralSpring){
+    void CreateSweep(std::vector<Vector3> points, float _z, int rotacoes, int _amountSpiralSpring, float _offsetHeightSpring, float rotX){
         float ang = 0.0f;
         int stepsweep = 360/rotacoes;
         Vector3 ptemp;
@@ -53,7 +63,7 @@ class Sweep
                 for(int i = 0, col = 1; i < 360; i += stepsweep, col ++){
                     ang = (PI * i)/(390/_amountSpiralSpring);
                     matrizPoints[linha][col] = rotacionaY(matrizPoints[linha][0], ang);
-                    matrizPoints[linha][col] = translada(matrizPoints[linha][col], Vector3(0,col+5, _z+4010));
+                    matrizPoints[linha][col] = translada(matrizPoints[linha][col], Vector3(0,col+5+(i*_offsetHeightSpring), _z+4010));
                     rot = col;
                 }
                 tam = points.size();
@@ -61,15 +71,16 @@ class Sweep
         } else {
             for(int linha = 0; linha < points.size(); linha ++){
                 for(int i = 0, col = 1; i < 360; i += stepsweep, col ++){
-                    ang = (PI * i)/180;
+                    ang = ((PI * i)/180) + rotX;
                     matrizPoints[linha][col] = rotacionaY(matrizPoints[linha][0], ang);
-                    matrizPoints[linha][col] = translada(matrizPoints[linha][col], Vector3(0,0, _z));
+                    matrizPoints[linha][col] = translada(matrizPoints[linha][col], Vector3(0,0,0));
                     rot = col;
                 }
                 tam = points.size();
             }
         }
     }
+
 
 };
 

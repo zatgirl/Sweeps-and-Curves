@@ -22,6 +22,10 @@ Botao *decreaseRot = NULL;
 Botao *perspectiv = NULL;
 Botao *create = NULL;
 Botao *clean = NULL;
+Botao *increaseAmountSpiralSpring = NULL;
+Botao *decreaseAmountSpiralSpring = NULL;
+Botao *increaseheightBetweenSprings = NULL;
+Botao *decreaseheightBetweenSprings = NULL;
 
 Sweep *sweep;
 Perspective *perspective;
@@ -34,10 +38,14 @@ public:
     std::vector <Vector3> _controlPointsBackup;
     std::vector <Vector3> _controlPoints;
     std::vector <Vector3> _curvePoints;
-    float _ajusted = -1200, _ajustez = -1200;
-    int _rotacoes = 8, _pointsInCurve = 8, _maxPointsInBezier = 5, _amountSpiralSpring = 4;
+    float _ajusted = -1200, _ajustez = -1200, _offsetHeightSpring = 0;
+    int _rotacoes = 8, _pointsInCurve = 10, _maxPointsInBezier = 5, _amountSpiralSpring = 4;
     bool _translational = false, _rotacional = true;
     int mouseX, mouseY, mouseSt;
+    bool pinta = false;
+    int pintou = 0;
+    int offsetX = 0, offsetY = 0, offsetZ = 0;
+    float rotX = 0, rotY;
 
     ///variáveis controladas pela classe
     bool createSt = true, perspectiveSt = false, boxmenusSt = false, click;
@@ -54,15 +62,36 @@ public:
 
         sweep = new Sweep();
         perspective = new Perspective();
+        filld = new Fill();
         BoundingCurveP1.set(40,50);
         BoundingCurveP2.set(500,430);
         BoundingOrthogonalP1.set(550,50);
         BoundingOrthogonalP2.set(1160,600);
     }
 
+    ~Scene(){
+        delete checkboxSweepRotacional;
+        delete checkboxSweepTranslacional;
+        delete increasePointsInBezier;
+        delete decreasePointsInBezier;
+        delete increasePoints;
+        delete decreasePoints;
+        delete increaseRot;
+        delete decreaseRot;
+        delete perspectiv;
+        delete create;
+        delete clean;
+        delete increaseAmountSpiralSpring;
+        delete decreaseAmountSpiralSpring;
+        delete increaseheightBetweenSprings;
+        delete decreaseheightBetweenSprings;
+//        free();
+    }
+
     void render(){
         ///CartesianScene Default
-        _controlPointsBackup = (_controlPoints.size() > 1) ? _controlPoints : _controlPointsBackup;
+        _curvePoints.clear();
+        _controlPointsBackup = (_controlPoints.size() > 1) ? _controlPoints : _curvePoints;
         UI();
         ManagerMenu();
         load();
@@ -74,35 +103,30 @@ public:
         if(perspectiveSt){
             PerspectiveScene();
             perspective->render();
+            //perspective->drawbuffer();
             viewInstructions(screenWidth, screenHeight);
             ///Caso haja alteração em alguma variável crítica, recupera valores do backup
             if(_controlPoints.size() < 1){
                _controlPoints = _controlPointsBackup;
             }
         }
-       // printf("_control size: %d\n", _controlPoints.size());
-       // printf("_controlbckp size: %d\n", _controlPointsBackup.size());
-        //printf("_curve size: %d\n", _curvePoints.size());
     }
 
     void load(){
-        _curvePoints.clear();
         _curvePoints = BE::Curva(_controlPoints, _pointsInCurve);
 
             sweep->_translational = this->_translational;
-            sweep->CreateSweep(_curvePoints, _ajustez, _rotacoes, this->_amountSpiralSpring);
-            if(_controlPoints.size() > 2){
+            sweep->CreateSweep(_curvePoints, _ajustez, _rotacoes, this->_amountSpiralSpring, this-> _offsetHeightSpring, rotX);
+            if(_controlPoints.size() > 3){
                 perspective->_translational = this->_translational;
-            perspective->persp(sweep->matrizPoints, sweep->tam, sweep->rot, _ajusted);
+                perspective->persp(sweep->matrizPoints, sweep->tam, sweep->rot, _ajusted, rotY);
             }
-
-
-
     }
 
     void ManagerMenu(){
         Botao *menu[] = {create, perspectiv};
-        Botao *menuCreate[] = {clean, increasePointsInBezier, decreasePointsInBezier, checkboxSweepRotacional, checkboxSweepTranslacional};
+        Botao *menuCreate[] = {clean, increasePointsInBezier, decreasePointsInBezier, checkboxSweepRotacional, checkboxSweepTranslacional,
+                               increaseAmountSpiralSpring, decreaseAmountSpiralSpring, increaseheightBetweenSprings, decreaseheightBetweenSprings};
         Botao *menuPerspective[] = {increasePoints, decreasePoints, increaseRot, decreaseRot};
         if(mouseSt == 1){
             if(menu[0]->Colidiu(mouseX,mouseY)){
@@ -129,9 +153,16 @@ public:
             _pointsInCurve = (menuPerspective[1]->Colidiu(mouseX,mouseY) ? _pointsInCurve - 1 : _pointsInCurve);
             _rotacoes = (menuPerspective[2]->Colidiu(mouseX,mouseY) ? _rotacoes + 1 : _rotacoes);
             _rotacoes = (menuPerspective[3]->Colidiu(mouseX,mouseY) ? (((_rotacoes - 1) <= 1) ? _rotacoes : _rotacoes -= 1) : _rotacoes);
+            _amountSpiralSpring = (menuCreate[5]->Colidiu(mouseX,mouseY)) ? _amountSpiralSpring + 1 : _amountSpiralSpring;
+            _amountSpiralSpring = (menuCreate[6]->Colidiu(mouseX,mouseY)) ? (((_amountSpiralSpring - 1) <= 1) ? _amountSpiralSpring : _amountSpiralSpring -= 1) : _amountSpiralSpring;
+            _offsetHeightSpring = (menuCreate[7]->Colidiu(mouseX,mouseY)) ? _offsetHeightSpring + 1 : _offsetHeightSpring;
+            _offsetHeightSpring = (menuCreate[8]->Colidiu(mouseX,mouseY)) ? (((_offsetHeightSpring - 1) <= 1) ? _offsetHeightSpring : _offsetHeightSpring -= 1) : _offsetHeightSpring;
             if (menuCreate[0]->Colidiu(mouseX,mouseY)){
                 _curvePoints.clear();
                 _controlPoints.clear();
+                _controlPointsBackup.clear();
+                memset((perspective->matrizPersp), 0, ((100*300)*sizeof(Vector2)));
+                memset((perspective->matrizOrthogonal), 0, ((100*300)*sizeof(Vector2)));
             }
         }
     }
@@ -141,10 +172,18 @@ public:
         CV::color(0.827, 0.827, 0.827);
         CV::rectFill(0,0,screenWidth,screenHeight);
         ///Menu
-        create = new Botao(0,screenHeight - 27, 150, 25, "Create", 0.752, 0.752, 0.752);
+
         create->Draw();
-        perspectiv = new Botao(155, screenHeight - 27, 150, 25, "Perspective", 0.752, 0.752, 0.752);
+
         perspectiv->Draw();
+
+
+    }
+
+    void ppp(){
+        create = new Botao(0,screenHeight - 27, 150, 25, "Create", 0.752, 0.752, 0.752);
+        perspectiv = new Botao(155, screenHeight - 27, 150, 25, "Perspective", 0.752, 0.752, 0.752);
+        clean = new Botao(1060, screenHeight - 80, 100, 25, "Clean", 0.254, 0.411, 1);
 
         increasePoints = new Botao(10, screenHeight - 100, 25, 25, "<", 0.254, 0.411, 1);
         decreasePoints = new Botao(70, screenHeight - 100, 25, 25, ">", 0.254, 0.411, 1);
@@ -154,6 +193,11 @@ public:
         decreasePointsInBezier = new Botao(70, screenHeight - 150, 25, 25, ">", 0.254, 0.411, 1);
         checkboxSweepRotacional = new Botao(10, screenHeight - 200, 25, 25, " ", 1, 1, 1);
         checkboxSweepTranslacional = new Botao(10, screenHeight - 250, 25, 25, " ", 1, 1, 1);
+
+        increaseAmountSpiralSpring = new Botao(275, screenHeight - 190, 25, 25, "<", 0.254, 0.411, 1);
+        decreaseAmountSpiralSpring = new Botao(335, screenHeight - 190, 25, 25, ">", 0.254, 0.411, 1);
+        increaseheightBetweenSprings = new Botao(275, screenHeight - 240, 25, 25, "<", 0.254, 0.411, 1);
+        decreaseheightBetweenSprings = new Botao(335, screenHeight - 240, 25, 25, ">", 0.254, 0.411, 1);
     }
 
     void CartesianScene(){
@@ -166,7 +210,7 @@ public:
         CV::text(BoundingOrthogonalP1.x, BoundingOrthogonalP2.y+10, "ORTHOGONAL VIEW");
         CV::rect(BoundingOrthogonalP1, BoundingOrthogonalP2);
 
-        clean = new Botao(10, screenHeight - 100, 100, 25, "Clean", 0.254, 0.411, 1);
+
         clean->Draw();
 
         ///Ajuste da quantidade de pontos estimados na curva de bezier
@@ -198,6 +242,30 @@ public:
         if(_translational){
             CV::line(10, screenHeight - 225, 35, screenHeight - 250);
             CV::line(10, screenHeight - 250, 35, screenHeight - 225);
+
+            CV::color(1,1,1);
+            CV::rect(270,450,500,600);
+            CV::text(275, screenHeight - 120, "PANEL SPRINGS");
+            CV::line(270,screenHeight - 125 ,500,screenHeight - 125);
+            CV::text(275, screenHeight - 160, "AMOUNT SPIRAL SPRINGS");
+            increaseAmountSpiralSpring->Draw();
+            CV::color(1,1,1);
+            CV::rectFill(305, screenHeight - 190, 330, screenHeight - 165);
+            CV::color(0);
+            char* tempFtoChar4 = (char*)malloc(5);
+            std::sprintf(tempFtoChar4, "%d", _amountSpiralSpring);
+            CV::text(311, screenHeight - 185, tempFtoChar4);
+            decreaseAmountSpiralSpring->Draw();
+
+            increaseheightBetweenSprings->Draw();
+            CV::color(1,1,1);
+            CV::text(275, screenHeight - 210, "HEIGHT BETWEEN SPRINGS");
+            CV::rectFill(305, screenHeight - 240, 330, screenHeight - 215);
+            CV::color(0);
+            char* tempFtoChar5 = (char*)malloc(5);
+            std::sprintf(tempFtoChar5, "%d", _offsetHeightSpring);
+            CV::text(311, screenHeight - 235, tempFtoChar5);
+            decreaseheightBetweenSprings->Draw();
         }
     }
 

@@ -14,8 +14,11 @@
 /// [X] Controle de FPS;
 /// [X] Visualização ortográfica e perspectiva (sob vários ângulos) em wireframe, com uso de triângulos;
 /// [X] Parametrização do número de pontos e faces do objeto gerado;
+/// [X] Painel para parametrizar o sweep translacional
+/// [X] Interface Iterativa
 /// [ ] Exibir vetores normais em cada face (até 1 ponto);
 /// [X] Adição de mais de 4 pontos de controle (até 1 ponto);
+/// [X] Preenchimento de polígonos sem iluminação;
 /// [ ] Preenchimento de polígonos com Iluminação por vértice (até 4 pontos).
 
 #include <GL/glut.h>
@@ -80,8 +83,32 @@ void keyboard(int key)
         case 111:
             scene->_pointsInCurve += 1;
             break;*/
-    }
-    printf("ajusted:  %.5f, ajustez: %.5f, rotacoes: %d, pointsincurve: %d\n", scene->_ajusted, scene->_ajustez, scene->_rotacoes, scene->_pointsInCurve);
+        case 106:
+            scene->_offsetHeightSpring +=0.1;
+            break;
+        case 107:
+            scene->_offsetHeightSpring -=0.1;
+            break;
+        case 104:
+            scene->pinta = true;
+            break;
+        case 202:
+            scene->rotX += 0.010;
+            break;
+        case 200:
+            scene->rotX -= 0.010;
+            break;
+        case 201:
+            scene->rotY += 0.010;
+            break;
+        case 203:
+            scene->rotY -= 0.010;
+            break;
+
+
+    }printf("rotx: %.2f\n", scene->rotY);
+    //printf("ajusted:  %.5f, ajustez: %.5f, rotacoes: %d, pointsincurve: %d\n", scene->_ajusted, scene->_ajustez, scene->_rotacoes, scene->_pointsInCurve);
+    printf("key: %d", key);
 }
 
 void keyboardUp(int key)
@@ -135,7 +162,9 @@ int main(void)
     scene = new Scene(screenWidth, screenHeight);
     frames = new Frames();
 
+
     CV::init(&screenWidth, &screenHeight, "T4 - Sweeps and Curves");
+    scene->ppp();
     CV::run();
     return 0;
 }

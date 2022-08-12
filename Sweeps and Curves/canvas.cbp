@@ -53,7 +53,6 @@
 		<Unit filename="src/gl_canvas2d.cpp" />
 		<Unit filename="src/gl_canvas2d.h" />
 		<Unit filename="src/main.cpp" />
-		<Unit filename="src/matriz.h" />
 		<Unit filename="src/perspective.h" />
 		<Unit filename="src/scene.h" />
 		<Unit filename="src/sweep.h" />
