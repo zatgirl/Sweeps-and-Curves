@@ -493,7 +493,7 @@
 1660079555 c:\users\mauren\documents\github\sweeps-and-curves\sweeps and curves\include\gl\freeglut_ext.h
 	<stdarg.h>
 
-1660079555 c:\users\mauren\documents\github\sweeps-and-curves\sweeps and curves\src\vector2.h
+1660278043 c:\users\mauren\documents\github\sweeps-and-curves\sweeps and curves\src\vector2.h
 
 1660079555 c:\users\mauren\documents\github\sweeps-and-curves\sweeps and curves\src\vector3.h
 
@@ -530,14 +530,15 @@
 	"gl_canvas2d.h"
 	"Vector2.h"
 
-1660267145 c:\users\mauren\documents\github\sweeps-and-curves\sweeps and curves\src\perspective.h
+1660311434 c:\users\mauren\documents\github\sweeps-and-curves\sweeps and curves\src\perspective.h
 	<stdio.h>
 	<stdlib.h>
 	<vector>
 	"gl_canvas2d.h"
 	"Vector2.h"
+	"fill.h"
 
-1660269439 c:\users\mauren\documents\github\sweeps-and-curves\sweeps and curves\src\scene.h
+1660311424 c:\users\mauren\documents\github\sweeps-and-curves\sweeps and curves\src\scene.h
 	<iostream>
 	<cstdio>
 	<cstdlib>
@@ -549,4 +550,15 @@
 
 1660079555 c:\users\mauren\documents\github\sweeps-and-curves\sweeps and curves\src\botao.h
 	"gl_canvas2d.h"
+
+1660311402 c:\users\mauren\documents\github\sweeps-and-curves\sweeps and curves\src\fill.h
+	<iostream>
+	<cstdio>
+	<cstdlib>
+	<cstring>
+	<vector>
+	<limits>
+	"gl_canvas2d.h"
+	"Vector2.h"
+	"Vector3.h"
 

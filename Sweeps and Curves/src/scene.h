@@ -91,8 +91,11 @@ public:
 
             sweep->_translational = this->_translational;
             sweep->CreateSweep(_curvePoints, _ajustez, _rotacoes, this->_amountSpiralSpring);
-            perspective->_translational = this->_translational;
+            if(_controlPoints.size() > 2){
+                perspective->_translational = this->_translational;
             perspective->persp(sweep->matrizPoints, sweep->tam, sweep->rot, _ajusted);
+            }
+
 
 
     }

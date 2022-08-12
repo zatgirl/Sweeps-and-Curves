@@ -8,6 +8,9 @@
 #include "gl_canvas2d.h"
 
 #include "Vector2.h"
+#include "fill.h"
+
+Fill *filld;
 
 class Perspective
 {
@@ -18,10 +21,12 @@ class Perspective
     bool _translational = false;
 
     void render(){
-        for(int i = 0; i < tam; i++){
-            for(int j = 0; j < rot+1; j++){
+        for(int i = 1; i < tam-1; i++){
+            for(int j = 1; j < rot-1; j++){
                 //CV::color(1+j);
                 //CV::circleFill(matrizPersp[i][j].x, matrizPersp[i][j].y, 4, 10);
+                //printf("x0[%d][%d]: %d, y0[%d][%d]: %d, x1[%d][%d]: %d, y1[%d][%d]: %d, x2[%d][%d]: %d, y2[%d][%d]: %d\n", i,j,(int)matrizPersp[i][j].x, i,j,(int)matrizPersp[i][j].y, i+1, j, (int)matrizPersp[i+1][j].x, i+1, j,(int)matrizPersp[i+1][j].y, i+1, j+1,(int)matrizPersp[i+1][j+1].x, i+1, j+1,(int)matrizPersp[i+1][j+1].y);
+                filld->render((int)matrizPersp[i][j].x, (int)matrizPersp[i][j].y, (int)matrizPersp[i+1][j].x, (int)matrizPersp[i+1][j].y, (int)matrizPersp[i+1][j+1].x, (int)matrizPersp[i+1][j+1].y);
             }
         }
         wire();

@@ -18,10 +18,18 @@ public:
        y = _y;
    }
 
+
+
    void set(float _x, float _y)
    {
        x = _x;
        y = _y;
+   }
+
+   void set(Vector2 p)
+   {
+       x = p.x;
+       y = p.y;
    }
 
    void normalize()
