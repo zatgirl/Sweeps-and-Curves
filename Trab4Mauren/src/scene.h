@@ -39,13 +39,14 @@ public:
     std::vector <Vector3> _controlPoints;
     std::vector <Vector3> _curvePoints;
     float _ajusted = -1200, _ajustez = -1200, _offsetHeightSpring = 0;
-    int _rotacoes = 8, _pointsInCurve = 10, _maxPointsInBezier = 5, _amountSpiralSpring = 4;
+    int _rotacoes = 18, _pointsInCurve = 10, _maxPointsInBezier = 5, _amountSpiralSpring = 4;
     bool _translational = false, _rotacional = true;
     int mouseX, mouseY, mouseSt;
     bool pinta = false;
     int pintou = 0;
     int offsetX = 0, offsetY = 0, offsetZ = 0;
     float rotX = 0, rotY;
+
     ///variáveis controladas pela classe
     bool createSt = true, perspectiveSt = false, boxmenusSt = false, click;
     Vector2 BoundingCurveP1, BoundingCurveP2;
@@ -61,7 +62,6 @@ public:
 
         sweep = new Sweep();
         perspective = new Perspective();
-        filld = new Fill();
         BoundingCurveP1.set(40,50);
         BoundingCurveP2.set(500,430);
         BoundingOrthogonalP1.set(550,50);
@@ -69,6 +69,8 @@ public:
     }
 
     ~Scene(){
+        delete sweep;
+        delete perspective;
         delete checkboxSweepRotacional;
         delete checkboxSweepTranslacional;
         delete increasePointsInBezier;
@@ -287,6 +289,7 @@ public:
     void viewFrames(float fps, int screenWidth, int screenHeight){
         CV::color(1,1,0);
         CV::rectFill(screenWidth-51,screenHeight-23, screenWidth, screenHeight-3);
+        CV::color(0);
         CV::text(screenWidth-51,screenHeight-20, fps);
     }
 
@@ -297,6 +300,10 @@ public:
         CV::text(10, screenHeight-220, "[d] INCREMENTA D");
         CV::text(10, screenHeight-240, "[s] DECREMENTA Z");
         CV::text(10, screenHeight-260, "[w] INCREMENTA Z");
+        CV::text(10, screenHeight-280, "[/\] ROTACIONA Y+");
+        CV::text(10, screenHeight-300, "[\/] ROTACIONA Y-");
+        CV::text(10, screenHeight-320, "[<] ROTACIONA X-");
+        CV::text(10, screenHeight-340, "[>] ROTACIONA X+");
     }
 
 };

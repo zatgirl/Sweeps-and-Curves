@@ -16,26 +16,23 @@
 class Fill
 {
  public:
-#if 0
+
+    ///retirado da internet
      // troca duas variaveis de pos
     #define SWAP(x,y) do { (x)=(x)^(y); (y)=(x)^(y); (x)=(x)^(y); } while(0)
 
-    // Horizontal line
-    static void lcd_hline(int x1, int x2, int y) {
-        if(x1>=x2){
-            SWAP(x1,x2);
-        }
-        for(;x1<=x2;x1++)
-            CV::color(2);
-            CV::point(x1,y);
+    void lcd_hline(int x1, int x2, int y)
+    {
+        if (x1 >= x2)
+            SWAP(x1, x2);
+
+        for (; x1 <= x2; x1++)
+            CV::point(x1, y);
     }
 
     // Fill a triangle - slope method
     // Original Author: Adafruit Industries
-    static void fillTriangleslope(int x0, int y0,int x1, int y1, int x2, int y2, int color) {
-
-        printf("x1: %d, x0: %d\n", x1, x0);
-        printf("entrou\n");
+    void fillTriangleslope(int x0, int y0,int x1, int y1, int x2, int y2) {
         int a, b, y, last;
         // Sort coordinates by Y order (y2 >= y1 >= y0)
         if (y0 > y1) {
@@ -63,14 +60,13 @@ class Fill
 
         int
             dx01 = x1 - x0,
-
             dy01 = y1 - y0,
             dx02 = x2 - x0,
             dy02 = y2 - y0,
             dx12 = x2 - x1,
             dy12 = y2 - y1;
         int sa = 0, sb = 0;
-printf("x1: %d, x0: %d\n", x1, x0);
+
         // For upper part of triangle, find scanline crossings for segment
         // 0-1 and 0-2.  If y1=y2 (flat-bottomed triangle), the scanline y
         // is included here (and second loop will be skipped, avoiding a /
@@ -81,7 +77,7 @@ printf("x1: %d, x0: %d\n", x1, x0);
         else         last = y1-1; // Skip it
 
         for(y=y0; y<=last; y++) {
-                printf("x0: %d, sa: %d, dy01: %d, dy02: %d, last: %.2f \n", x0,sa,dy01,dy02, last);
+                //printf("x0: %d, sa: %d, dy01: %d, dy02: %d, last: %.2f \n", x0,sa,dy01,dy02, last);
             a   = x0 + sa / dy01;
             b   = x0 + sb / dy02;
             sa += dx01;
@@ -108,7 +104,7 @@ printf("x1: %d, x0: %d\n", x1, x0);
 
     // Fill a triangle - Bresenham method
     // Original from http://www.sunshine2k.de/coding/java/TriangleRasterization/TriangleRasterization.html
-    static void fillTriangle(int x1, int y1, int x2, int y2, int x3, int y3, int c) {
+    void fillTriangle(int x1, int y1, int x2, int y2, int x3, int y3) {
         int t1x,t2x,y,minx,maxx,t1xp,t2xp;
         bool changed1 = false;
         bool changed2 = false;
@@ -238,122 +234,9 @@ printf("x1: %d, x0: %d\n", x1, x0);
             if(y>y3) return;
         }
     }
-#endif
+
     Fill(){
     }
-
-    int _maxBoxX = std::numeric_limits<int>::min(),
-        _maxBoxY = std::numeric_limits<int>::min(),
-        _minBoxX = std::numeric_limits<int>::max(),
-        _minBoxY = std::numeric_limits<int>::max();
-
-
-
-    void BoundingBox(std::vector<Vector2> points)
-    {
-        for(int idx = 0; idx < 3; idx++)
-        {
-            Vector2 temp = points[idx];
-            this->_maxBoxX = (temp.x > this->_maxBoxX) ? temp.x : this->_maxBoxX;
-            this->_maxBoxY = (temp.y > this->_maxBoxY) ? temp.y : this->_maxBoxY;
-            this->_minBoxX = (temp.x < this->_minBoxX) ? temp.x : this->_minBoxX;
-            this->_minBoxY = (temp.y < this->_minBoxY) ? temp.y : this->_minBoxY;
-        }
-    }
-
-    //https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection
-    bool linelineIntersection(Vector2 point, Vector2 startLine, Vector2 endLine)
-    {
-        double t, u, x1, x2, x3, x4, y1, y2, y3, y4;
-        x1 = endLine.x; x2 = startLine.x; x3 = point.x; x4 = endLine.x > startLine.x ? endLine.x + 1 : startLine.x + 1;
-        y1 = endLine.y; y2 = startLine.y; y3 = point.y; y4 = point.y;
-
-        t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
-        u = ((x1 - x3) * (y1 - y2) - (y1 - y3) * (x1 - x2)) / ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
-
-        if ((t >= 0 && t <= 1) && (u >= 0 && u <= 1))
-        {
-        return true;
-        }
-        return false;
-    }
-
-    bool pointPolygon(Vector2 point, std::vector<Vector2> points)
-    {
-        int coll = 0;
-        for (int cont = 0; cont < 3; cont++)
-        {
-            int fim = cont == 3 - 1 ? 0 : cont + 1;
-            if (linelineIntersection(point, points[cont], points[fim]))
-            {
-                coll++;
-            }
-        }
-        if (coll % 2 == 0)
-        {
-            return false;
-        }
-        return true;
-    }
-
-    //std::vector<Vector2> fillfunction(float x1, float y1, float x2, float y2, float x3, float y3){
-    std::vector<Vector2> fillfunction(Vector2 matrizPoints[100][300], int tam, int rot){
-        std::vector<Vector2> points;
-       // printf("x1: %.2f, y1: %.2f, x2: %.2f, y2: %.2f, x3: %.2f, y3: %.2f\n", x1,y1,x2,y2,x3,y3);
-        //points.push_back(Vector2(x1,y1));
-        //points.push_back(Vector2(x2,y2));
-        //points.push_back(Vector2(x3,y3));
-        //BoundingBox(points);
-        Vector2 pos;
-        std::vector<Vector2>buffer;
-        for(int linha = 0; linha <= tam; linha++){
-            for(int col = 0; col <= rot; col++){
-
-                    points.push_back(Vector2(matrizPoints[linha][col].x, matrizPoints[linha][col].y)); //linha horizontal
-                    if((linha < tam - 1)){
-                        points.push_back(Vector2(matrizPoints[linha+1][col].x, matrizPoints[linha+1][col].y));
-                        points.push_back(Vector2(matrizPoints[linha+1][col+1].x, matrizPoints[linha+1][col+1].y));
-                    } else if(linha < tam - 1){
-                        points.push_back(Vector2(matrizPoints[0][col].x, matrizPoints[0][col].y));
-                    }
-
-                //points.push_back(Vector2(matrizPoints[linha][col].x, matrizPoints[linha][col].y));
-                //points.push_back(Vector2(matrizPoints[linha+1][col].x, matrizPoints[linha+1][col].y));
-                //points.push_back(Vector2(matrizPoints[linha+1][col+1].x, matrizPoints[linha+1][col+1].y));
-                BoundingBox(points);
-                for(int y = _minBoxY; y < _maxBoxY; y ++){
-                    for(int x = _minBoxX; x < _maxBoxX; x ++){
-                        pos.set(x,y);
-                        if (pointPolygon(pos, points))
-                        {
-                            CV::color(2);
-                            //CV::point(x,y);
-                            buffer.push_back(Vector2(x,y));
-                        }
-                    }
-                }
-                points.clear();
-            }
-        }
-        /*for(int y = _minBoxY; y < _maxBoxY; y ++){
-            for(int x = _minBoxX; x < _maxBoxX; x ++){
-                pos.set(x,y);
-                if (pointPolygon(pos, points))
-                {
-                    CV::color(2);
-                    //CV::point(x,y);
-                    buffer.push_back(Vector2(x,y));
-                }
-            }
-        }*/
-        return buffer;
-    }
-
-    void render(float x1, float y1, float x2, float y2, float x3, float y3){
-        //fillfunction(x1, y1, x2, y2, x3, y3);
-    }
-
-
 
 
 };

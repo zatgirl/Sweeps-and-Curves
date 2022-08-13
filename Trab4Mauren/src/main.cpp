@@ -16,10 +16,8 @@
 /// [X] Parametrização do número de pontos e faces do objeto gerado;
 /// [X] Painel para parametrizar o sweep translacional
 /// [X] Interface Iterativa
-/// [ ] Exibir vetores normais em cada face (até 1 ponto);
 /// [X] Adição de mais de 4 pontos de controle (até 1 ponto);
-/// [ ] Preenchimento de polígonos sem iluminação;
-/// [ ] Preenchimento de polígonos com Iluminação por vértice (até 4 pontos).
+/// [X] Preenchimento de polígonos sem iluminação.
 
 #include <GL/glut.h>
 #include <GL/freeglut_ext.h> //callback da wheel do mouse.
@@ -77,20 +75,17 @@ void keyboard(int key)
         case 107:
             scene->_offsetHeightSpring -=0.1;
             break;
-        case 104:
-            scene->pinta = true;
-            break;
         case 202: /// >
-            scene->rotX += 0.010;
+            scene->rotX += 0.1;
             break;
         case 200: /// <
-            scene->rotX -= 0.010;
+            scene->rotX -= 0.1;
             break;
         case 201: /// ^
-            scene->rotY += 0.010;
+            scene->rotY += 0.1;
             break;
         case 203: /// \/
-            scene->rotY -= 0.010;
+            scene->rotY -= 0.1;
             break;
     }
 }
@@ -115,7 +110,6 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
             ///Adiciona a quantidade de pontos especificada pelo usuario
             if(scene->_controlPoints.size() < scene->_maxPointsInBezier){
                 scene->_controlPoints.push_back(Vector3(x,y,0));
-                printf("x: %d, y: %d\n", x,y);
             }
             ///Testa se o click ocorreu em cima de algum ponto de controle da curva
             for(int i = 0; i < scene->_controlPoints.size(); i ++){

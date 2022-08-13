@@ -21,18 +21,11 @@ class Perspective
     int tam, rot;
     bool _translational = false;
 
-    void render(){
-        for(int i = 1; i <= tam; i++){
-            for(int j = 1; j <= rot; j++){
-                //CV::color(1+j);
-                //CV::circleFill(matrizPersp[i][j].x, matrizPersp[i][j].y, 4, 10);
-                //filld->fillTriangle((int)matrizPersp[i][j].x, (int)matrizPersp[i][j].y, (int)matrizPersp[i+1][j].x, (int)matrizPersp[i+1][j].y, (int)matrizPersp[i+1][j+1].x, (int)matrizPersp[i+1][j+1].y,4);
-                //printf("x0[%d][%d]: %d, y0[%d][%d]: %d, x1[%d][%d]: %d, y1[%d][%d]: %d, x2[%d][%d]: %d, y2[%d][%d]: %d\n", i,j,(int)matrizPersp[i][j].x, i,j,(int)matrizPersp[i][j].y, i+1, j, (int)matrizPersp[i+1][j].x, i+1, j,(int)matrizPersp[i+1][j].y, i+1, j+1,(int)matrizPersp[i+1][j+1].x, i+1, j+1,(int)matrizPersp[i+1][j+1].y);
-                //filld->render((int)matrizPersp[i][j].x, (int)matrizPersp[i][j].y, (int)matrizPersp[i+1][j].x, (int)matrizPersp[i+1][j].y, (int)matrizPersp[i+1][j+1].x, (int)matrizPersp[i+1][j+1].y);
-            }
-        }
-        //filld->render(200, 200, 400, 300, 500, 190);
+    Perspective(){
+        filld = new Fill();
+    }
 
+    void render(){
         wire();
     }
 
@@ -70,12 +63,21 @@ class Perspective
       return resp;
    }
 
+   Vector3 rotacionaY(Vector3 p , float ang)
+   {
+      Vector3 resp;
+          resp.x = cos(ang)*p.x + sin(ang)*p.z;
+          resp.y = p.y;
+          resp.z = -sin(ang)*p.x + cos(ang)*p.z;
+      return resp;
+   }
+
    void persp(Vector3 points[][360], int _tam, int _rot, float _d, float rotX){
        rot = _rot;
        tam = _tam;
        Vector3 ptemp;
       for(int x=0; x < _tam; x++){
-         for(int z=0; z < _rot+1; z++)
+         for(int z=0; z <= _rot; z++)
          {
              matrizOrthogonal[x][z].set(points[x][z].x, points[x][z].y);
              if(_translational){
@@ -94,11 +96,13 @@ class Perspective
 
    void wire(){
         CV::color(0);
+        Vector2 P1, P2, P3, P4;
         for(int linha = 0; linha <= tam; linha++){
             for(int col = 0; col <= rot; col++){
                 if(_translational){
                     if(col < rot){
                         CV::line(matrizPersp[linha][col].x, matrizPersp[linha][col].y, matrizPersp[linha][col+1].x, matrizPersp[linha][col+1].y); //linha horizontal
+
                     if((linha < tam - 1))
                         CV::line(matrizPersp[linha][col].x, matrizPersp[linha][col].y, matrizPersp[linha+1][col].x, matrizPersp[linha+1][col].y); //linha vertical
                     }
@@ -110,15 +114,27 @@ class Perspective
                     }
                 } else {
                     CV::line(matrizPersp[linha][col], matrizPersp[linha][col+1]); //linha horizontal
+                    P1.set(matrizPersp[linha][col].x, matrizPersp[linha][col].y);
+                    if(col <= rot){
+                        P2.set(matrizPersp[linha][col+1].x, matrizPersp[linha][col+1].y);
+                    }
                     if(linha < tam - 1){
                         CV::line(matrizPersp[linha][col], matrizPersp[linha+1][col]); //linha vertical
+                        P4.set(matrizPersp[linha+1][col].x, matrizPersp[linha+1][col].y);
                         CV::line(matrizPersp[linha][col], matrizPersp[linha+1][col+1]); //linha diagonal
+                        P3.set(matrizPersp[linha+1][col+1].x, matrizPersp[linha+1][col+1].y);
                     } else if(linha < tam - 1 && (_translational)){
-                        CV::line(matrizPersp[linha][col], matrizPersp[0][col]); //linha vertical
+                        CV::line(matrizPersp[linha][col], matrizPersp[0][col+1]); //linha vertical
+                        P3.set(matrizPersp[0][col+1].x, matrizPersp[0][col+1].y);
                     }
                 }
+                if(!_translational){
+                    draw();
+                }
+
             }
         }
+
    }
 
    void wireOrthogonal(){
@@ -126,6 +142,7 @@ class Perspective
         int offsetx = 855, offsety = 60;
         for(int linha = 0; linha <= tam; linha++){
             for(int col = 0; col <= rot; col++){
+
                 if(_translational){
                     if(col < rot){
                         CV::line(matrizOrthogonal[linha][col].x + offsetx, matrizOrthogonal[linha][col].y + offsety, matrizOrthogonal[linha][col+1].x + offsetx, matrizOrthogonal[linha][col+1].y + offsety); //linha horizontal
@@ -152,16 +169,35 @@ class Perspective
         }
    }
 
-   void zBuffer(){
-        MatrizZBuffer = (filld->fillfunction(matrizPersp, tam, rot));
-   }
-   void drawbuffer(){
-        for(int x = 0; x < 1200; x++){
-            for(int y = 0; y < 700; y++){
-                CV::color(2);
-                CV::point(MatrizZBuffer[x+(y*1200)].x, MatrizZBuffer[x+(y*1200)].y);
-            }
+   void draw(){
+        CV::color(0);
+        Vector2 P1, P2, P3, P4;
+        for(int linha = 0; linha <= tam-1; linha++){
+            for(int col = 0; col <= rot-1; col++){
+                    P1.set(matrizPersp[linha][col].x, matrizPersp[linha][col].y);
+                    if(col <= rot){
+                    P2.set(matrizPersp[linha][col+1].x, matrizPersp[linha][col+1].y);
+                    }
+                    if(linha < tam - 1){
+
+                        P4.set(matrizPersp[linha+1][col].x, matrizPersp[linha+1][col].y);
+
+                        P3.set(matrizPersp[linha+1][col+1].x, matrizPersp[linha+1][col+1].y);
+
+                    } else if(linha < tam - 1 && (_translational)){
+
+                        P3.set(matrizPersp[0][col+1].x, matrizPersp[0][col+1].y);
+                    }
+                    CV::color(2);
+                    drawTriangles(P1,P2,P3);
+                    drawTriangles(P1,P3,P4);
+           }
+
         }
+   }
+
+   void drawTriangles(Vector2 P1, Vector2 P2, Vector2 P3){
+       filld->fillTriangle(P1.x, P1.y, P2.x, P2.y, P3.x, P3.y);
    }
 
 };

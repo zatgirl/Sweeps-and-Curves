@@ -53,15 +53,11 @@ class Sweep
     void CreateSweep(std::vector<Vector3> points, float _z, int rotacoes, int _amountSpiralSpring, float _offsetHeightSpring, float rotX){
         float ang = 0.0f;
         int stepsweep = 360/rotacoes;
-        int maiorY= - 300, menorY=300;
         Vector3 ptemp;
         for(int i = 0; i < points.size(); i++){
             ptemp = (points[i]);
             matrizPoints[i][0] = ptemp;
-            menorY = (ptemp.x < menorY) ? ptemp.x : menorY;
-            maiorY = (ptemp.y < maiorY) ? ptemp.y : maiorY;
         }
-        //int tamanho = maiorY - menorY;
         if(_translational){
             for(int linha = 0; linha < points.size(); linha ++){
                 for(int i = 0, col = 1; i < 360; i += stepsweep, col ++){
