@@ -17,7 +17,6 @@ class Fill
 {
  public:
 
-    ///retirado da internet
      // troca duas variaveis de pos
     #define SWAP(x,y) do { (x)=(x)^(y); (y)=(x)^(y); (x)=(x)^(y); } while(0)
 
@@ -30,80 +29,6 @@ class Fill
             CV::point(x1, y);
     }
 
-    // Fill a triangle - slope method
-    // Original Author: Adafruit Industries
-    void fillTriangleslope(int x0, int y0,int x1, int y1, int x2, int y2) {
-        int a, b, y, last;
-        // Sort coordinates by Y order (y2 >= y1 >= y0)
-        if (y0 > y1) {
-            SWAP(y0, y1);
-            SWAP(x0, x1);
-        }
-        if (y1 > y2) {
-            SWAP(y2, y1);
-            SWAP(x2, x1);
-        }
-        if (y0 > y1) {
-            SWAP(y0, y1);
-            SWAP(x0, x1);
-        }
-
-        if(y0 == y2) { // All on same line case
-            a = b = x0;
-            if(x1 < a)      a = x1;
-            else if(x1 > b) b = x1;
-            if(x2 < a)      a = x2;
-            else if(x2 > b) b = x2;
-            lcd_hline(a, b, y0);
-            return;
-        }
-
-        int
-            dx01 = x1 - x0,
-            dy01 = y1 - y0,
-            dx02 = x2 - x0,
-            dy02 = y2 - y0,
-            dx12 = x2 - x1,
-            dy12 = y2 - y1;
-        int sa = 0, sb = 0;
-
-        // For upper part of triangle, find scanline crossings for segment
-        // 0-1 and 0-2.  If y1=y2 (flat-bottomed triangle), the scanline y
-        // is included here (and second loop will be skipped, avoiding a /
-        // error there), otherwise scanline y1 is skipped here and handle
-        // in the second loop...which also avoids a /0 error here if y0=y
-        // (flat-topped triangle)
-        if(y1 == y2) last = y1;   // Include y1 scanline
-        else         last = y1-1; // Skip it
-
-        for(y=y0; y<=last; y++) {
-                //printf("x0: %d, sa: %d, dy01: %d, dy02: %d, last: %.2f \n", x0,sa,dy01,dy02, last);
-            a   = x0 + sa / dy01;
-            b   = x0 + sb / dy02;
-            sa += dx01;
-            sb += dx02;
-            // longhand a = x0 + (x1 - x0) * (y - y0) / (y1 - y0)
-            //          b = x0 + (x2 - x0) * (y - y0) / (y2 - y0)
-            lcd_hline(a, b, y);
-        }
-
-        // For lower part of triangle, find scanline crossings for segment
-        // 0-2 and 1-2.  This loop is skipped if y1=y2
-        sa = dx12 * (y - y1);
-        sb = dx02 * (y - y0);
-        for(; y<=y2; y++) {
-            a   = x1 + sa / dy12;
-            b   = x0 + sb / dy02;
-            sa += dx12;
-            sb += dx02;
-            // longhand a = x1 + (x2 - x1) * (y - y1) / (y2 - y1)
-            //          b = x0 + (x2 - x0) * (y - y0) / (y2 - y0)
-            lcd_hline(a, b, y);
-        }
-    }
-
-    // Fill a triangle - Bresenham method
-    // Original from http://www.sunshine2k.de/coding/java/TriangleRasterization/TriangleRasterization.html
     void fillTriangle(int x1, int y1, int x2, int y2, int x3, int y3) {
         int t1x,t2x,y,minx,maxx,t1xp,t2xp;
         bool changed1 = false;
@@ -237,8 +162,6 @@ class Fill
 
     Fill(){
     }
-
-
 };
 
 #endif

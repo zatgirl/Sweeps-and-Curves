@@ -76,16 +76,16 @@ void keyboard(int key)
             scene->_offsetHeightSpring -=0.1;
             break;
         case 202: /// >
-            scene->rotX += 0.1;
+            scene->rotX += 0.5;
             break;
         case 200: /// <
-            scene->rotX -= 0.1;
+            scene->rotX -= 0.5;
             break;
         case 201: /// ^
-            scene->rotY += 0.1;
+            scene->rotY += 0.5;
             break;
         case 203: /// \/
-            scene->rotY -= 0.1;
+            scene->rotY -= 0.5;
             break;
     }
 }
