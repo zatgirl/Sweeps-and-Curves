@@ -46,7 +46,6 @@ public:
     int pintou = 0;
     int offsetX = 0, offsetY = 0, offsetZ = 0;
     float rotX = 0, rotY;
-
     ///variáveis controladas pela classe
     bool createSt = true, perspectiveSt = false, boxmenusSt = false, click;
     Vector2 BoundingCurveP1, BoundingCurveP2;
@@ -85,7 +84,6 @@ public:
         delete decreaseAmountSpiralSpring;
         delete increaseheightBetweenSprings;
         delete decreaseheightBetweenSprings;
-//        free();
     }
 
     void render(){
@@ -156,7 +154,7 @@ public:
             _amountSpiralSpring = (menuCreate[5]->Colidiu(mouseX,mouseY)) ? _amountSpiralSpring + 1 : _amountSpiralSpring;
             _amountSpiralSpring = (menuCreate[6]->Colidiu(mouseX,mouseY)) ? (((_amountSpiralSpring - 1) <= 1) ? _amountSpiralSpring : _amountSpiralSpring -= 1) : _amountSpiralSpring;
             _offsetHeightSpring = (menuCreate[7]->Colidiu(mouseX,mouseY)) ? _offsetHeightSpring + 1 : _offsetHeightSpring;
-            _offsetHeightSpring = (menuCreate[8]->Colidiu(mouseX,mouseY)) ? (((_offsetHeightSpring - 1) <= 1) ? _offsetHeightSpring : _offsetHeightSpring -= 1) : _offsetHeightSpring;
+            _offsetHeightSpring = (menuCreate[8]->Colidiu(mouseX,mouseY)) ? (((_offsetHeightSpring - 1) < 0) ? _offsetHeightSpring : _offsetHeightSpring -= 1) : _offsetHeightSpring;
             if (menuCreate[0]->Colidiu(mouseX,mouseY)){
                 _curvePoints.clear();
                 _controlPoints.clear();
@@ -172,15 +170,11 @@ public:
         CV::color(0.827, 0.827, 0.827);
         CV::rectFill(0,0,screenWidth,screenHeight);
         ///Menu
-
         create->Draw();
-
         perspectiv->Draw();
-
-
     }
 
-    void ppp(){
+    void Buttons(){
         create = new Botao(0,screenHeight - 27, 150, 25, "Create", 0.752, 0.752, 0.752);
         perspectiv = new Botao(155, screenHeight - 27, 150, 25, "Perspective", 0.752, 0.752, 0.752);
         clean = new Botao(1060, screenHeight - 80, 100, 25, "Clean", 0.254, 0.411, 1);
@@ -220,9 +214,7 @@ public:
         CV::color(1,1,1);
         CV::rectFill(40, screenHeight - 150, 65, screenHeight - 125);
         CV::color(0);
-        char* tempFtoChar3 = (char*)malloc(5);
-        std::sprintf(tempFtoChar3, "%d", _maxPointsInBezier);
-        CV::text(49, screenHeight - 145, tempFtoChar3);
+        CV::text(49, screenHeight - 145, (int)_maxPointsInBezier);
         decreasePointsInBezier->Draw();
 
         ///Checkbox para selecionar o tipo de sweep desenhado:
@@ -252,9 +244,7 @@ public:
             CV::color(1,1,1);
             CV::rectFill(305, screenHeight - 190, 330, screenHeight - 165);
             CV::color(0);
-            char* tempFtoChar4 = (char*)malloc(5);
-            std::sprintf(tempFtoChar4, "%d", _amountSpiralSpring);
-            CV::text(311, screenHeight - 185, tempFtoChar4);
+            CV::text(311, screenHeight - 185, (int)_amountSpiralSpring);
             decreaseAmountSpiralSpring->Draw();
 
             increaseheightBetweenSprings->Draw();
@@ -262,9 +252,7 @@ public:
             CV::text(275, screenHeight - 210, "HEIGHT BETWEEN SPRINGS");
             CV::rectFill(305, screenHeight - 240, 330, screenHeight - 215);
             CV::color(0);
-            char* tempFtoChar5 = (char*)malloc(5);
-            std::sprintf(tempFtoChar5, "%d", _offsetHeightSpring);
-            CV::text(311, screenHeight - 235, tempFtoChar5);
+            CV::text(311, screenHeight - 235, (int)_offsetHeightSpring);
             decreaseheightBetweenSprings->Draw();
         }
     }
@@ -282,9 +270,7 @@ public:
         CV::color(1,1,1);
         CV::rectFill(40, screenHeight - 150, 65, screenHeight - 125);
         CV::color(0);
-        char* tempFtoChar = (char*)malloc(5);
-        std::sprintf(tempFtoChar, "%d", _rotacoes);
-        CV::text(49, screenHeight - 145, tempFtoChar);
+        CV::text(49, screenHeight - 145, (int)_rotacoes);
         decreaseRot->Draw();
         CV::color(0);
 
@@ -294,19 +280,14 @@ public:
         CV::color(1,1,1);
         CV::rectFill(40, screenHeight - 100, 65, screenHeight - 75);
         CV::color(0);
-        char* tempFtoChar2 = (char*)malloc(5);
-        std::sprintf(tempFtoChar2, "%d", _pointsInCurve);
-        CV::text(49, screenHeight - 95, tempFtoChar2);
+        CV::text(49, screenHeight - 95, (int)_pointsInCurve);
         decreasePoints->Draw();
     }
 
     void viewFrames(float fps, int screenWidth, int screenHeight){
-        char* tempFtoChar = (char*)malloc(5);
         CV::color(1,1,0);
         CV::rectFill(screenWidth-51,screenHeight-23, screenWidth, screenHeight-3);
-        std::sprintf(tempFtoChar, "%.2f", fps);
-        CV::color(0,0,0);
-        CV::text(screenWidth-51,screenHeight-20, tempFtoChar);
+        CV::text(screenWidth-51,screenHeight-20, fps);
     }
 
     void viewInstructions(int screenWidth, int screenHeight){

@@ -178,6 +178,34 @@ void CV::text(float x, float y, const char *t)
     }
 }
 
+void CV::text(float x, float y, float t)
+{
+    char FtoChar[20];
+    std::sprintf(FtoChar, "%f", t);
+
+    int tam = (int)strlen(FtoChar);
+
+    for(int c=0; c < tam; c++)
+    {
+      glRasterPos2i(x + c*10, y);
+      glutBitmapCharacter(GLUT_BITMAP_8_BY_13, FtoChar[c]);
+    }
+}
+
+void CV::text(float x, float y, int t)
+{
+    char ItoChar[20];
+    std::sprintf(ItoChar, "%d", t);
+
+    int tam = (int)strlen(ItoChar);
+
+    for(int c=0; c < tam; c++)
+    {
+      glRasterPos2i(x + c*10, y);
+      glutBitmapCharacter(GLUT_BITMAP_8_BY_13, ItoChar[c]);
+    }
+}
+
 
 void CV::clear(float r, float g, float b)
 {

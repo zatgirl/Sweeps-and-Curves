@@ -18,7 +18,7 @@
 /// [X] Interface Iterativa
 /// [ ] Exibir vetores normais em cada face (até 1 ponto);
 /// [X] Adição de mais de 4 pontos de controle (até 1 ponto);
-/// [X] Preenchimento de polígonos sem iluminação;
+/// [ ] Preenchimento de polígonos sem iluminação;
 /// [ ] Preenchimento de polígonos com Iluminação por vértice (até 4 pontos).
 
 #include <GL/glut.h>
@@ -71,18 +71,6 @@ void keyboard(int key)
         case 110:
             scene->_amountSpiralSpring -= 1;
             break;
-    /*    case 116:
-            scene->_rotacoes += 1;
-            break;
-        case 114:
-            scene->_rotacoes = ((scene->_rotacoes - 1) <= 1) ? scene->_rotacoes : scene->_rotacoes -= 1;
-            break;
-        case 112:
-            scene->_pointsInCurve = ((scene->_pointsInCurve - 1) <= 3) ? scene->_pointsInCurve : scene->_pointsInCurve -= 1;
-            break;
-        case 111:
-            scene->_pointsInCurve += 1;
-            break;*/
         case 106:
             scene->_offsetHeightSpring +=0.1;
             break;
@@ -92,23 +80,19 @@ void keyboard(int key)
         case 104:
             scene->pinta = true;
             break;
-        case 202:
+        case 202: /// >
             scene->rotX += 0.010;
             break;
-        case 200:
+        case 200: /// <
             scene->rotX -= 0.010;
             break;
-        case 201:
+        case 201: /// ^
             scene->rotY += 0.010;
             break;
-        case 203:
+        case 203: /// \/
             scene->rotY -= 0.010;
             break;
-
-
-    }printf("rotx: %.2f\n", scene->rotY);
-    //printf("ajusted:  %.5f, ajustez: %.5f, rotacoes: %d, pointsincurve: %d\n", scene->_ajusted, scene->_ajustez, scene->_rotacoes, scene->_pointsInCurve);
-    printf("key: %d", key);
+    }
 }
 
 void keyboardUp(int key)
@@ -154,7 +138,6 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
             click = false;
         }
     }
-    //printf("x: %d, y: %d\n", x,y);
 }
 
 int main(void)
@@ -164,7 +147,7 @@ int main(void)
 
 
     CV::init(&screenWidth, &screenHeight, "T4 - Sweeps and Curves");
-    scene->ppp();
+    scene->Buttons();
     CV::run();
     return 0;
 }

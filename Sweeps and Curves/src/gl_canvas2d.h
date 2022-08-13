@@ -61,6 +61,7 @@ public:
     static void text(float x, float y, const char *t);
     static void text(Vector2 pos, const char *t);
     static void text(float x, float y, int t);
+    static void text(float x, float y, float t);
 
     //coordenada de offset para desenho de objetos.
     static void translate(float x, float y);

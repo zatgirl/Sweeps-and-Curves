@@ -48,7 +48,7 @@ class Perspective
    Vector2 translacao(Vector2 point){
        Vector2 resp;
        resp.x = point.x + 600;
-       resp.y = point.y + 105;
+       resp.y = point.y + 205;
        return resp;
    }
 
@@ -60,7 +60,6 @@ class Perspective
            resp.y = (p.y*_d) / (p.z);
        return resp;
    }
-
 
     Vector3 rotacionaX(Vector3 p , float ang)
    {
