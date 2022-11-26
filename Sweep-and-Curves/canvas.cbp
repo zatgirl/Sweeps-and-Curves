@@ -44,12 +44,18 @@
 			<Add library="../lib/freeglut.lib" />
 		</Linker>
 		<Unit filename="include/GL/glut.h" />
+		<Unit filename="src/Botao.h" />
 		<Unit filename="src/Frames.h" />
 		<Unit filename="src/Vector2.h" />
 		<Unit filename="src/Vector3.h" />
+		<Unit filename="src/bezier.h" />
+		<Unit filename="src/fill.h" />
 		<Unit filename="src/gl_canvas2d.cpp" />
 		<Unit filename="src/gl_canvas2d.h" />
 		<Unit filename="src/main.cpp" />
+		<Unit filename="src/perspective.h" />
+		<Unit filename="src/scene.h" />
+		<Unit filename="src/sweep.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />
